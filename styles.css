@@ -1,0 +1,252 @@
+.contain {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+#wrap {
+  margin: auto;
+  background-color: #202023;
+  width: 100%;
+  padding-bottom: 18px;
+}
+
+.navbar {
+  background-color: #202023;
+  overflow: hidden;
+}
+
+.header-label {
+  margin: 15% 1%;
+  width: 50vw;
+  max-width: 500px;
+}
+
+#logo-nav {
+  width: 35vw;
+  max-width: 180px;
+  background-color: #202023;
+}
+
+.img-header {
+  position: center;
+  background-color: #202023;
+}
+
+.head-text {
+  position: absolute;
+  background: transparent;
+  color: white;
+  margin: 200px 1.5%;
+  padding-bottom: 150%;
+  max-height: 5vh;
+  width: 400px;
+}
+
+.head-4 {
+  color: #00ff00;
+  font-size: 30px;
+  font-weight: 200;
+  font-family: "Raleway", sans-serif;
+}
+
+.head-p {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 300;
+}
+
+#design-intro {
+  background-color: white;
+  width: 100%;
+  height: auto;
+  margin: auto;
+  overflow: hidden;
+}
+
+#design-intro h1 {
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  text-align: center;
+  font-size: 25px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+#design-intro .project-box {
+  background-color: #dcdcdc;
+  -webkit-box-shadow: 3px 3px 5px #777777;
+          box-shadow: 3px 3px 5px #777777;
+}
+
+#design-intro h2 {
+  font-weight: 700;
+  font-family: "Raleway", sans-serif;
+}
+
+#design-intro label {
+  text-align: center;
+  font-family: "Raleway", sans-serif;
+  color: white;
+  font-weight: 900;
+  font-size: 20px;
+  background-color: #202023;
+  padding-right: 15px;
+  width: 100%;
+  -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+          box-shadow: 3px 3px 5px 3px #ccc;
+}
+
+#design-intro .card {
+  margin-top: 40px;
+}
+
+.logo-box {
+  background-color: #dcdcdc;
+  -webkit-box-shadow: 3px 3px 5px #ccc;
+          box-shadow: 3px 3px 5px #ccc;
+}
+
+.logo-box label {
+  text-align: center;
+  font-family: "Raleway", sans-serif;
+  color: white;
+  font-weight: 900;
+  font-size: 20px;
+  background-color: #202023;
+  padding-right: 15px;
+  width: 100%;
+  -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+          box-shadow: 3px 3px 5px 3px #ccc;
+}
+
+.logo-box .logos {
+  max-width: 960px;
+  margin: auto;
+  display: center;
+}
+
+#experience-section {
+  background-color: #f1f1f1;
+  margin-top: 50px;
+  padding-top: 25px;
+}
+
+#experience-section h1 {
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  text-align: center;
+  font-size: 25px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+#experience-section .exp-box {
+  margin-top: 25px;
+}
+
+#experience-section .exp-sep {
+  background-color: white;
+  margin: auto;
+  margin-top: 15px;
+  -webkit-box-shadow: 3px 3px 5px #ccc;
+          box-shadow: 3px 3px 5px #ccc;
+}
+
+#experience-section img {
+  width: 70%;
+  margin: auto;
+  display: block;
+  margin-top: 50px;
+}
+
+#experience-section h3 {
+  margin-top: 30px;
+}
+
+#experience-section p {
+  margin: 15px auto;
+}
+
+#experience-section p a {
+  color: #007bff;
+  padding-top: 35px;
+  margin: auto;
+}
+
+#contact legend h1 {
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  text-align: center;
+  font-size: 25px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+#contact form {
+  margin: 0 auto;
+}
+
+#contact #message {
+  height: 125px;
+}
+
+#contact .material-icons,
+#contact .icon-text {
+  vertical-align: middle;
+}
+
+#contact .icon-text-caps,
+#contact .icon-text-tweaked {
+  text-transform: uppercase;
+}
+
+#contact .icon-text-tweaked {
+  position: relative;
+  top: 1px;
+}
+
+#contact #errorMsg {
+  margin-left: 20px;
+  color: red;
+}
+
+.icons a {
+  text-decoration: none;
+  color: black;
+  margin-left: 75px;
+  display: inline-block;
+  margin-top: 25px;
+}
+
+footer #footer-sec {
+  background-color: #202023;
+  padding-bottom: 100px;
+}
+
+@media (max-width: 900px) {
+  .head-text {
+    text-align: center;
+    margin: 8% 10%;
+    width: 80%;
+    padding: 2%;
+  }
+  #wrap {
+    height: 435px;
+  }
+  .img-header {
+    margin-top: 150px;
+  }
+  .img-header img {
+    display: none;
+  }
+  #experience-section img {
+    width: 30%;
+    margin-bottom: 20px;
+  }
+  .icons a {
+    margin-left: 20px;
+  }
+  .icons #last {
+    margin-bottom: 25px;
+  }
+}
+/*# sourceMappingURL=styles.css.map */
