@@ -7,7 +7,7 @@
 */
 $Name 		= $_POST['name'];
 $emailAddress 		= $_POST['email'];
-$message			= $_POST['phone'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
