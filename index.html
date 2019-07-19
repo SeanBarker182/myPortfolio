@@ -8,6 +8,7 @@
     <title>Sean Barker</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -28,13 +29,14 @@
       <div class="contain">
         <!-- NAV BAR -->
         <nav class="navbar navbar-expand-lg navbar-dark">
-          <a class="navbar-brand" href="#"
-            ><img
+          <div class="navbar-brand">
+            <img
               src="assets/logo.png"
               class="img-fluid"
               id="logo-nav"
               alt="Responsive image"
-          /></a>
+            />
+          </div>
           <button
             class="navbar-toggler"
             type="button"
@@ -134,19 +136,19 @@
                     AJAX.
                   </p>
                   <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-secondary" type="button">
-                      <a
-                        href="https://github.com/SeanBarker182/Summit-Beverages-on-Tap"
-                        target="_blank"
-                        >Code</a
-                      >
+                    <button
+                      class="btn btn-secondary"
+                      type="button"
+                      onclick="window.location.href = 'https://github.com/SeanBarker182/Summit-Beverages-on-Tap';"
+                    >
+                      Code
                     </button>
-                    <button class="btn btn-secondary" type="button">
-                      <a
-                        href="https://www.sullens.net/~sbarker/sdev250/project/"
-                        target="_blank"
-                        >Site</a
-                      >
+                    <button
+                      class="btn btn-secondary"
+                      type="button"
+                      onclick="window.location.href = 'https://www.sullens.net/~sbarker/sdev250/project/';"
+                    >
+                      Site
                     </button>
                   </div>
                 </div>
@@ -206,12 +208,12 @@
                             the content as concisely as possible.
                           </p>
                           <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-secondary" type="button">
-                              <a
-                                href="https://github.com/SeanBarker182/myPortfolio"
-                                target="_blank"
-                                >Code</a
-                              >
+                            <button
+                              class="btn btn-secondary"
+                              type="button"
+                              onclick="window.location.href = 'https://github.com/SeanBarker182/myPortfolio';"
+                            >
+                              Code
                             </button>
                           </div>
                         </div>
@@ -373,7 +375,7 @@
     </div>
     <!-- CONTACTSECTION -->
     <div class="container-fluid contain" id="contact">
-      <legend><h1>CONTACT</h1></legend>
+      <div class="contact"><h1>CONTACT</h1></div>
       <div class="row">
         <div class="col-md-6">
           <form
@@ -456,8 +458,25 @@
       </div>
     </div>
     <footer>
-      <div id="footer-sec"></div>
+      <div id="footer-sec">
+        <div class="contain">
+          <div id="footer-logo">
+            <img
+              src="assets/logo.png"
+              class="img-fluid"
+              id="logo-foot"
+              alt="Responsive image"
+            />
+          </div>
+          <p>&copy; <span id="year"></span>. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
+    <script>
+      var currentYear = new Date().getFullYear();
+      var dateContainer = document.getElementById("year");
+      dateContainer.innerHTML = currentYear;
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

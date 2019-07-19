@@ -67,9 +67,6 @@ h4 {
 .img-header {
   position: center;
   background-color: #202023;
-
-  img {
-  }
 }
 
 .head-text {
@@ -183,7 +180,7 @@ h4 {
 // CONTACT SECTION
 
 #contact {
-  legend {
+  .contact {
     @include secTitle();
   }
   form {
@@ -224,7 +221,19 @@ h4 {
 footer {
   #footer-sec {
     background-color: $myBackground;
-    padding-bottom: 100px;
+    padding-bottom: 30px;
+    color: white;
+    margin: auto;
+    text-align: center;
+  }
+  #footer-logo {
+    margin-top: 10px;
+    padding-top: 25px;
+  }
+  #logo-foot {
+    width: 35vw;
+    max-width: 180px;
+    background-color: #202023;
   }
 }
 

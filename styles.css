@@ -191,7 +191,7 @@ h4 {
   margin: auto;
 }
 
-#contact legend h1 {
+#contact .contact h1 {
   font-family: "Raleway", sans-serif;
   font-weight: 900;
   text-align: center;
@@ -238,7 +238,21 @@ h4 {
 
 footer #footer-sec {
   background-color: #202023;
-  padding-bottom: 100px;
+  padding-bottom: 30px;
+  color: white;
+  margin: auto;
+  text-align: center;
+}
+
+footer #footer-logo {
+  margin-top: 10px;
+  padding-top: 25px;
+}
+
+footer #logo-foot {
+  width: 35vw;
+  max-width: 180px;
+  background-color: #202023;
 }
 
 @media (max-width: 900px) {
