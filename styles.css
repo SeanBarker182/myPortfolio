@@ -1,3 +1,10 @@
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Raleway", sans-serif;
+}
+
 .contain {
   max-width: 1280px;
   margin: 0 auto;
@@ -77,6 +84,10 @@
           box-shadow: 3px 3px 5px #777777;
 }
 
+#design-intro h1 {
+  padding: 20px;
+}
+
 #design-intro h2 {
   font-weight: 700;
   font-family: "Raleway", sans-serif;
@@ -97,6 +108,10 @@
 
 #design-intro .card {
   margin-top: 40px;
+}
+
+#design-intro a {
+  color: white;
 }
 
 .logo-box {
@@ -166,7 +181,11 @@
   margin: 15px auto;
 }
 
-#experience-section p a {
+#experience-section .exp-dis {
+  margin-bottom: 35px;
+}
+
+#experience-section a {
   color: #007bff;
   padding-top: 35px;
   margin: auto;

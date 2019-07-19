@@ -48,13 +48,11 @@ function checkValidity() {
     if (nmeVal.value === "") {
       //Turns background and border red if field is blank changes chkVal to blank
       nmeVal.style.background = "rgb(255,233,233)";
-      nmeVal.style.borderColor = "red";
       chkVal = false;
       nmeVal.focus();
     } else {
       //Turns the field white if field is valid
       nmeVal.style.background = "white";
-      nmeVal.style.borderColor = "white";
     }
     if (chkVal === false) {
       //throws error if validity is false
@@ -86,15 +84,18 @@ function checkValidity() {
         " local validity: " +
         chkVal
     );
-    if (email.value === "") {
+
+    let emailTest = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let emailBoo = emailTest.test(email.value);
+
+    console.log(emailBoo);
+    if (emailBoo != true) {
       //Follows the previous try loop to validate email
       email.style.background = "rgb(255,233,233)";
-      email.style.borderColor = "red";
       chkVal = false;
       email.focus();
     } else {
       email.style.background = "white";
-      email.style.borderColor = "white";
     }
     if (chkVal === false) {
       throw "Please enter a valid Email address.";

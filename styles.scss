@@ -1,3 +1,4 @@
+// SASS TOOLS
 $myBlue: #007bff;
 $myBackground: #202023;
 $myGreen: #00ff00;
@@ -24,7 +25,14 @@ $myGreen: #00ff00;
     margin-bottom: 20px;
   }
 }
+// GLOBAL STYLES
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Raleway", sans-serif;
+}
 .contain {
   max-width: 1280px;
   margin: 0 auto;
@@ -98,7 +106,9 @@ $myGreen: #00ff00;
     background-color: #dcdcdc;
     box-shadow: 3px 3px 5px rgb(119, 119, 119);
   }
-
+  h1 {
+    padding: 20px;
+  }
   h2 {
     font-weight: 700;
     font-family: "Raleway", sans-serif;
@@ -110,15 +120,10 @@ $myGreen: #00ff00;
   .card {
     margin-top: 40px;
   }
+  a {
+    color: white;
+  }
 }
-
-// .intro-box {
-//     border: 1px dotted rgb(102, 102, 102);
-//     img {
-//         height: auto;
-//         width: auto;
-//     }
-// }
 
 // SKILLS SECTION
 .logo-box {
@@ -135,6 +140,8 @@ $myGreen: #00ff00;
     display: center;
   }
 }
+
+// EXPERIENCE SECTION
 
 #experience-section {
   @include secTitle();
@@ -162,18 +169,18 @@ $myGreen: #00ff00;
   }
   p {
     margin: 15px auto;
-    a {
-      color: $myBlue;
-      padding-top: 35px;
-      margin: auto;
-    }
+  }
+  .exp-dis {
+    margin-bottom: 35px;
+  }
+  a {
+    color: $myBlue;
+    padding-top: 35px;
+    margin: auto;
   }
 }
-//   @media (max-width: 580px) {
-//     .contain {
-//       //min-height: 275px
-//     }
-//   }
+
+// CONTACT SECTION
 
 #contact {
   legend {
@@ -212,6 +219,7 @@ $myGreen: #00ff00;
     margin-top: 25px;
   }
 }
+// FOOTER
 
 footer {
   #footer-sec {
@@ -219,6 +227,8 @@ footer {
     padding-bottom: 100px;
   }
 }
+
+// MEDIA QUERIES
 @media (max-width: 900px) {
   .head-text {
     text-align: center;
