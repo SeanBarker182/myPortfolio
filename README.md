@@ -4,8 +4,8 @@ I had two goals while developing my portfolio. I wanted to take advantage of Boo
 
 ### Code
 
--The nav bar of this page was coded using Bootstap
--All of the scrolling animations were developed using jQuery
--The CSS was done in Sass
--I used JavaScript for form validation and other areas such as the JavaScript hover effect
+-The nav bar of this page was coded using Bootstap  
+-All of the scrolling animations were developed using jQuery  
+-The CSS was done in Sass  
+-I used JavaScript for form validation and other areas such as the JavaScript hover effect  
 -The form is submitted to my email via Google Forms
