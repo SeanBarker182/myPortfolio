@@ -67,8 +67,8 @@ const Home: NextPage = () => {
         </article>
       </main>
       <footer className="mt-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-12 lg:px-8">
-          <div className="flex justify-between">
+        <div className="max-w-3xl mx-auto px-4 sm:px-12 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row justify-between">
             <ul className="flex space-x-4">
               <li>
                 <a
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
                 </a>
               </li>
             </ul>
-            <p className="text-slate-50 text-opacity-50 text-sm leading-none mt-auto mb-1">
+            <p className="text-slate-50 text-opacity-50 text-sm leading-none mb-1 mt-2 sm:mt-auto">
               © Sean Barker {new Date().getFullYear()}. All rights reserved.
             </p>
           </div>
