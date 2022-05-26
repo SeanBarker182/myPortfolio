@@ -72,10 +72,11 @@ const Home: NextPage = () => {
             <ul className="flex space-x-4">
               <li>
                 <a
-                  href="https://linkein.com/seanbarker"
+                  href="https://www.linkedin.com/in/sean-barker/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  <span className="sr-only">LinkedIn</span>
                   <FontAwesomeIcon
                     icon={faLinkedinIn}
                     className="w-8 text-slate-50 text-opacity-50 hover:text-opacity-100"
@@ -83,7 +84,8 @@ const Home: NextPage = () => {
                 </a>
               </li>
               <li>
-                <a href="https://twitter.com/seanbarker" target="_blank">
+                <a href="https://twitter.com/seanbarkerdev" target="_blank">
+                  <span className="sr-only">Twitter</span>
                   <FontAwesomeIcon
                     icon={faTwitter}
                     className="w-9 text-slate-50 text-opacity-50 hover:text-opacity-100"
@@ -92,6 +94,7 @@ const Home: NextPage = () => {
               </li>
               <li>
                 <a href="https://github.com/seanbarker182" target="_blank">
+                  <span className="sr-only">GitHub</span>
                   <FontAwesomeIcon
                     icon={faGithub}
                     className="w-8 text-slate-50 text-opacity-50 hover:text-opacity-100"
