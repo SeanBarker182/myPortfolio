@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { SocialLinks } from "../components/SocialLinks";
 
 const Home: NextPage = () => {
   return (
@@ -56,52 +57,19 @@ const Home: NextPage = () => {
           <p className="text-white text-lg">
             I'm a full stack developer at Reusser in Roanoke, Indiana. My
             favorite technologies to use at the moment are React, Node,
-            Typescript, Framer Motion, and React Native. I'm currently playing
-            around with Swift and Tensorflow.js, and hope to eventually learn
-            SvelteKit and Go.
+            Typescript, Framer Motion, and React Native. In the future, I'm
+            currently learning Rust and hope to use it in a project soon.
           </p>
-          <p className="text-white text-lg mt-6">
+          {/* <p className="text-white text-lg mt-6">
             I'm not searching for new opportunities at the moment, but would
             love to connect with you on one of the sites below.
-          </p>
+          </p> */}
         </article>
       </main>
       <footer className="mt-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-12 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row justify-between">
-            <ul className="flex space-x-4">
-              <li>
-                <a
-                  href="https://www.linkedin.com/in/sean-barker/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="sr-only">LinkedIn</span>
-                  <FontAwesomeIcon
-                    icon={faLinkedinIn}
-                    className="w-8 text-slate-50 text-opacity-50 hover:text-opacity-100"
-                  />
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/seanbarkerdev" target="_blank">
-                  <span className="sr-only">Twitter</span>
-                  <FontAwesomeIcon
-                    icon={faTwitter}
-                    className="w-9 text-slate-50 text-opacity-50 hover:text-opacity-100"
-                  />
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/seanbarker182" target="_blank">
-                  <span className="sr-only">GitHub</span>
-                  <FontAwesomeIcon
-                    icon={faGithub}
-                    className="w-8 text-slate-50 text-opacity-50 hover:text-opacity-100"
-                  />
-                </a>
-              </li>
-            </ul>
+            <SocialLinks />
             <p className="text-slate-50 text-opacity-50 text-sm leading-none mb-1 mt-2 sm:mt-auto">
               © Sean Barker {new Date().getFullYear()}. All rights reserved.
             </p>
