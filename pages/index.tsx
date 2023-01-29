@@ -57,8 +57,8 @@ const Home: NextPage = () => {
           <p className="text-white text-lg">
             I'm a full stack developer at Reusser in Roanoke, Indiana. My
             favorite technologies to use at the moment are React, Node,
-            Typescript, Framer Motion, and React Native. In the future, I'm
-            currently learning Rust and hope to use it in a project soon.
+            Typescript, Framer Motion, and React Native. I'm currently learning
+            Rust and hope to use it in a project soon.
           </p>
           {/* <p className="text-white text-lg mt-6">
             I'm not searching for new opportunities at the moment, but would
