@@ -7,9 +7,9 @@ const House: NextPage = () => {
   return (
     <>
       <Head>
-        <title>13456 Marjorie Ln</title>
+        <title>New House</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="13456 Marjorie Dr" />
+        <meta property="og:title" content="New House" />
         <meta property="og:type" content="image" />
         <meta property="og:url" content="https://seanbarker.dev/house" />
         <meta
