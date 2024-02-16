@@ -16,6 +16,10 @@ const House: NextPage = () => {
           property="og:image"
           content="https://seanbarker.dev/images/house/large/1.webp"
         />
+        <meta
+          property="og:image:secure_url"
+          content="https://seanbarker.dev/images/house/large/1.webp"
+        />
       </Head>
 
       <ImageGallery
