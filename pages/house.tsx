@@ -14,12 +14,15 @@ const House: NextPage = () => {
         <meta property="og:url" content="https://seanbarker.dev/house" />
         <meta
           property="og:image"
-          content="https://seanbarker.dev/images/house/large/1.webp"
+          content="https://seanbarker.dev/images/house/medium/0.webp"
         />
         <meta
           property="og:image:secure_url"
-          content="https://seanbarker.dev/images/house/large/1.webp"
+          content="https://seanbarker.dev/images/house/medium/0.webp"
         />
+        <meta property="og:image:type" content="image/webp" />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="400" />
       </Head>
 
       <ImageGallery
