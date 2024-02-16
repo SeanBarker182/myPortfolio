@@ -1,17 +1,18 @@
-import {
-  faGithub,
-  faLinkedin,
-  faLinkedinIn,
-  faTwitter,
-  faTwitterSquare,
-} from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { SocialLinks } from "../components/SocialLinks";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
+  const [count, setCount] = useState(0);
+  const { push } = useRouter();
+  const handlePress = () => {
+    setCount(count + 1);
+    if (count + 1 === 5) {
+      push("/house");
+    }
+  };
   return (
     <div>
       <Head>
@@ -22,36 +23,38 @@ const Home: NextPage = () => {
 
       <main className="max-w-3xl mx-auto py-4 px-4 sm:py-6 sm:px-12 lg:px-8">
         <section>
-          <h2 className="text-3xl font-extrabold text-slate-50 sm:text-4xl tracking-tight mb-12">
+          <h2 className="text-3xl font-extrabold text-slate-50 sm:text-4xl tracking-tight mb-12 text-left">
             <span className="block leading-12">Hey there 👋</span>
             <span className="block underline underline-offset-2 decoration-8 decoration-rose-600 text-slate-60 leading-12">
               I'm Sean Barker.
             </span>
           </h2>
-          <div className="bg-slate-800 rounded-lg mt-8 mb-4 shadow-xl shadow-slate-800/50">
-            <div className="flex items-center space-x-2 border-b border-b-slate-400 p-4">
-              <div className="h-3 w-3 bg-rose-600 rounded-full" />
-              <div className="h-3 w-3 bg-yellow-400 rounded-full" />
-              <div className="h-3 w-3 bg-green-500 rounded-full" />
+          <button onClick={handlePress} className="w-full">
+            <div className="bg-slate-800 rounded-lg mt-8 mb-4 shadow-xl shadow-slate-800/50">
+              <div className="flex items-center space-x-2 border-b border-b-slate-400 p-4">
+                <div className="h-3 w-3 bg-rose-600 rounded-full" />
+                <div className="h-3 w-3 bg-yellow-400 rounded-full" />
+                <div className="h-3 w-3 bg-green-500 rounded-full" />
+              </div>
+              <div className="p-4">
+                <Code selfClose={false} lnNum={1}>
+                  Me
+                </Code>
+                <Code lnNum={2} indent={1}>
+                  👨‍👩‍👧Dad
+                </Code>
+                <Code lnNum={3} indent={1}>
+                  👨‍💻Developer
+                </Code>
+                <Code lnNum={4} indent={1}>
+                  💻TechEnthusiast
+                </Code>
+                <Code selfClose={false} closingTag={true} lnNum={5}>
+                  Me
+                </Code>
+              </div>
             </div>
-            <div className="p-4">
-              <Code selfClose={false} lnNum={1}>
-                Me
-              </Code>
-              <Code lnNum={2} indent={1}>
-                👨‍👩‍👧Dad
-              </Code>
-              <Code lnNum={3} indent={1}>
-                👨‍💻Developer
-              </Code>
-              <Code lnNum={4} indent={1}>
-                💻TechEnthusiast
-              </Code>
-              <Code selfClose={false} closingTag={true} lnNum={5}>
-                Me
-              </Code>
-            </div>
-          </div>
+          </button>
         </section>
         <article className="mt-12">
           <p className="text-white text-lg">
