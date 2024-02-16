@@ -3,13 +3,20 @@ import Head from "next/head";
 import ImageGallery from "react-image-gallery";
 
 const imgCount = 36;
+export async function getStaticProps() {
+  return {
+    props: {},
+  };
+}
+
 const House: NextPage = () => {
   return (
     <>
       <Head>
         <title>New House</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="New House" />
+        <meta property="og:title" content="" />
+        <meta property="og:description" content="" />
         <meta property="og:type" content="image" />
         <meta property="og:url" content="https://seanbarker.dev/house" />
         <meta
@@ -23,6 +30,7 @@ const House: NextPage = () => {
         <meta property="og:image:type" content="image/webp" />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="400" />
+        <meta property="og:image:alt" content="New House" />
       </Head>
 
       <ImageGallery
