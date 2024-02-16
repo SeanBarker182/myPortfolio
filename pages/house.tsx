@@ -13,8 +13,8 @@ const House: NextPage = () => {
 
       <ImageGallery
         items={Array.from({ length: imgCount }).map((_, i) => ({
-          original: `/images/house/large/${i}.jpg`,
-          thumbnail: `/images/house/thumb/${i}.jpg`,
+          original: `/images/house/large/${i}.webp`,
+          thumbnail: `/images/house/thumb/${i}.webp`,
         }))}
       />
     </>
