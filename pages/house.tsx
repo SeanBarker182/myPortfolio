@@ -9,28 +9,23 @@ export async function getStaticProps() {
   };
 }
 
+export const Metadata = {
+  title: "New House",
+  description: "New House",
+  url: "https://seanbarker.dev/house",
+  image: "https://seanbarker.dev/images/house/medium/0.webp",
+  imageType: "image/webp",
+  imageWidth: 600,
+  imageHeight: 400,
+  imageAlt: "New House",
+};
+
 const House: NextPage = () => {
   return (
     <>
       <Head>
         <title>New House</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="" />
-        <meta property="og:description" content="" />
-        <meta property="og:type" content="image" />
-        <meta property="og:url" content="https://seanbarker.dev/house" />
-        <meta
-          property="og:image"
-          content="https://seanbarker.dev/images/house/medium/0.webp"
-        />
-        <meta
-          property="og:image:secure_url"
-          content="https://seanbarker.dev/images/house/medium/0.webp"
-        />
-        <meta property="og:image:type" content="image/webp" />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="400" />
-        <meta property="og:image:alt" content="New House" />
       </Head>
 
       <ImageGallery
