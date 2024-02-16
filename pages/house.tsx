@@ -9,6 +9,13 @@ const House: NextPage = () => {
       <Head>
         <title>13456 Marjorie Ln</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="13456 Marjorie Dr" />
+        <meta property="og:type" content="image" />
+        <meta property="og:url" content="https://seanbarker.dev/house" />
+        <meta
+          property="og:image"
+          content="https://seanbarker.dev/images/house/large/1.webp"
+        />
       </Head>
 
       <ImageGallery
