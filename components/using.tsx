@@ -7,8 +7,8 @@ const loveUsing = [
   "React Native",
 ];
 
-const learning = ["Swift", "TensorFlow.js", "Laravel", "GraphQL"];
-const wantToLearn = ["Go", "SvelteKit", "Kotlin"];
+const learning = ["Swift", "TensorFlow.js", "Rust"];
+const wantToLearn = ["Go", "Kotlin"];
 export const Using = () => {
   return (
     <div>
@@ -30,7 +30,7 @@ export const Using = () => {
       </ul>
       <h3 className="text-2xl font-extrabold text-slate-50 sm:text-3xl tracking-tight mt-8">
         <span className="block underline underline-offset-2 decoration-2 decoration-rose-600">
-          I'm Currently Learning:
+          I&apos;m Currently Learning:
         </span>
       </h3>
       <ul className="mt-4 flex flex-wrap">

@@ -36,7 +36,7 @@ type SocialLinkProps = {
 const SocialLink: React.FC<SocialLinkProps> = ({ icon, href, label }) => {
   return (
     <li>
-      <a href={href} target="_blank">
+      <a href={href} target="_blank" rel="noreferrer">
         <span className="sr-only">{label}</span>
         <FontAwesomeIcon
           icon={icon}

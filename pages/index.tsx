@@ -26,7 +26,7 @@ const Home: NextPage = () => {
           <h2 className="text-3xl font-extrabold text-slate-50 sm:text-4xl tracking-tight mb-12 text-left">
             <span className="block leading-12">Hey there 👋</span>
             <span className="block underline underline-offset-2 decoration-8 decoration-rose-600 text-slate-60 leading-12">
-              I'm Sean Barker.
+              I&apos;m Sean Barker.
             </span>
           </h2>
           <button onClick={handlePress} className="w-full">
@@ -58,10 +58,10 @@ const Home: NextPage = () => {
         </section>
         <article className="mt-12">
           <p className="text-white text-lg">
-            I'm a full stack developer at Reusser in Roanoke, Indiana. My
+            I&apos;m a full stack developer at Reusser in Roanoke, Indiana. My
             favorite technologies to use at the moment are React, Node,
-            Typescript, Framer Motion, and React Native. I'm currently learning
-            Rust and hope to use it in a project soon.
+            Typescript, Framer Motion, and React Native. I&apos;m currently
+            learning Rust and hope to use it in a project soon.
           </p>
           {/* <p className="text-white text-lg mt-6">
             I'm not searching for new opportunities at the moment, but would
