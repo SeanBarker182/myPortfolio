@@ -8,7 +8,7 @@ type Data = {
 import fs from "fs";
 import path from "path";
 
-const filePath = path.resolve(".", "media/bugs-doorbell.wav");
+const filePath = path.resolve(".", "media/bugs-doorbell.mp3");
 const audioBuffer = fs.readFileSync(filePath);
 
 export default function handler(
@@ -16,7 +16,7 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   // get bugs-doorbell.wav from the media folder and deliver it to the client
-  res.setHeader("Content-Type", "audio/wav");
+  res.setHeader("Content-Type", "audio/mp3");
   res.setHeader("Content-Length", audioBuffer.length);
   res.end(audioBuffer);
 }
