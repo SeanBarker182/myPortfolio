@@ -19,7 +19,8 @@ const next = d.next ? await getEntry('projects', d.next) : undefined;
 const statusLabel = d.status === 'live' ? `live on ${d.platform.toLowerCase()}` : d.status === 'soon' ? 'coming soon' : 'writeup';
 const device = d.device;
 const screens = d.screens.length ? d.screens : [{ label: 'Screen', src: undefined, alt: undefined, frame: undefined }];
-const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone' ? 'bench' : 'sides';
+const heroFrame = screens[0].frame ?? device;
+const variant = project.id === 'big-fort-fest' ? 'festival' : heroFrame === 'phone' ? 'bench' : 'sides';
 ---
 
 <Base title={d.title} description={d.description} og={`/og/work/${project.id}.png`} type="article">
@@ -35,9 +36,11 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone'
       </div>
       <div class="relative hidden h-[440px] w-[460px] shrink-0 items-end justify-center md:flex">
         <Scene variant={variant} class="absolute inset-0 h-full w-full" />
-        {device === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
-        {device === 'tablet' && <div class="tablet relative aspect-[1.5] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div></div>}
-        {device === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
+        {heroFrame === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
+        {heroFrame === 'tablet' && <div class="tablet relative aspect-[1.5] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div></div>}
+        {heroFrame === 'watch' && <div class="watch relative h-[260px] w-[220px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
+        {heroFrame === 'none' && <div class="relative w-[260px] overflow-hidden rounded-2xl lift"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div>}
+        {heroFrame === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
       </div>
     </section>
 
@@ -74,7 +77,7 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone'
           if (frame === 'mac') return <div class="mac h-[240px] w-full"><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div></div>;
           if (frame === 'tablet') return <div class="tablet aspect-[1.5] w-full" style={`transform: rotate(${i % 2 ? 0.4 : -0.4}deg)`}><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} fit="contain" /></div></div>;
           if (frame === 'watch') return <div class="watch mx-auto h-[230px] w-[196px]" style={`transform: rotate(${i % 2 ? 0.6 : -0.6}deg)`}><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div></div>;
-          if (frame === 'none') return <div class="mx-auto w-[190px] overflow-hidden rounded-[28px]"><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div>;
+          if (frame === 'none') return <div class="mx-auto w-full overflow-hidden rounded-2xl lift"><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div>;
           return <Phone class="mx-auto h-[380px] w-[190px]" tilt={i % 2 ? 0.5 : -0.5}><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></Phone>;
         })}
       </aside>
