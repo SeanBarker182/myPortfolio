@@ -39,11 +39,14 @@ const facts = [
 
     <section class="reveal flex flex-col gap-7">
       <h2 class="font-hand text-[56px] leading-none font-bold">Where I've worked</h2>
-      <ol class="ml-6 flex flex-col border-l-[3px] border-ink pl-10">
+      <ol class="ml-7 flex flex-col border-l-[3px] border-ink pl-12">
         {resume.experience.map((job) => (
           <li class="relative flex flex-col gap-1.5 pb-9">
-            <span class="absolute top-0 -left-[66px]" style={job.end === 'Present' ? 'filter: drop-shadow(3px 3px 0 var(--accent))' : undefined}>
-              <CompanyLogo logo={job.logo} company={job.company} size={48} />
+            <span
+              class="hd-thin absolute top-0 -left-[79px] flex h-14 w-14 items-center justify-center rounded-full bg-paper"
+              style={job.end === 'Present' ? 'box-shadow: 0 0 0 4px var(--accent)' : undefined}
+            >
+              <CompanyLogo logo={job.logo} company={job.company} size={40} />
             </span>
             <div class="font-mono text-[13px] opacity-65">{job.start} to {job.end}</div>
             <div class="text-2xl font-extrabold">{job.title} <span class="font-semibold opacity-70">· {job.company}</span></div>
