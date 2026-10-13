@@ -17,7 +17,7 @@ const tilt = tilts[index % tilts.length];
 
 <a href={`/work/${project.id}`} class:list={['card', border]} style={`transform: rotate(${tilt}deg)`}>
   <div class="mx-2.5 mt-2.5 h-[230px] overflow-hidden rounded-xl">
-    <Shot color={d.color} label={`${d.title} screenshot`} />
+    <Shot color={d.color} label={`${d.title} screenshot`} src={d.screens[0]?.src} alt={d.screens[0]?.alt ?? `${d.title} screenshot`} />
   </div>
   <div class="flex flex-col gap-2.5 px-6 pt-5 pb-6">
     <div class="flex items-center justify-between gap-3">
