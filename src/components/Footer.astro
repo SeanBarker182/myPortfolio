@@ -1,0 +1,16 @@
+---
+import { site } from '@/data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 flex flex-wrap items-center justify-between gap-4 border-t-[3px] border-ink pt-6">
+  <div class="flex flex-wrap gap-5">
+    <a href={site.social.github} class="navlink text-[15px]" rel="me">GitHub</a>
+    <a href={site.social.linkedin} class="navlink text-[15px]" rel="me">LinkedIn</a>
+    <a href={site.social.twitter} class="navlink text-[15px]" rel="me">Twitter</a>
+    <a href="/rss.xml" class="navlink text-[15px]">RSS</a>
+  </div>
+  <div class="text-sm opacity-70">
+    © {year} {site.name} · <span class="font-hand text-xl opacity-100">drawn in Fort Wayne</span>
+  </div>
+</footer>

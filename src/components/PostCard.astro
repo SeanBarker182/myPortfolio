@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Sticker from './Sticker.astro';
+import { readingTime } from '@/data/site';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  index?: number;
+}
+const { post, index = 0 } = Astro.props;
+const d = post.data;
+const borders = ['hd2', 'hd3', 'hd'];
+const date = d.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const meta = d.canonicalLabel ? `${d.canonicalLabel} · ${readingTime(post.body)} min read` : `${date} · ${readingTime(post.body)} min read`;
+---
+
+<a href={`/blog/${post.id}`} class:list={['card gap-2.5 px-7 py-6', borders[index % borders.length]]}>
+  <div class="font-mono text-[13px] opacity-65">{meta}</div>
+  <h3 class="text-[22px] leading-tight font-extrabold">{d.title}</h3>
+  <p class="text-base leading-relaxed opacity-80">{d.description}</p>
+  {d.tags.length > 0 && (
+    <div class="flex flex-wrap gap-2 pt-1">
+      {d.tags.slice(0, 2).map((t) => <Sticker small wobble={false}>{t}</Sticker>)}
+    </div>
+  )}
+</a>

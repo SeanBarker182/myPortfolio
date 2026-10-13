@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Shot from './Shot.astro';
+import Sticker from './Sticker.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+const { project, index } = Astro.props;
+const d = project.data;
+const borders = ['hd', 'hd2', 'hd3'];
+const tilts = [-0.5, 0.4, 0.3, -0.4, 0.5];
+const border = borders[index % borders.length];
+const tilt = tilts[index % tilts.length];
+---
+
+<a href={`/work/${project.id}`} class:list={['card', border]} style={`transform: rotate(${tilt}deg)`}>
+  <div class="mx-2.5 mt-2.5 h-[230px] overflow-hidden rounded-xl">
+    <Shot color={d.color} label={`${d.title} screenshot`} />
+  </div>
+  <div class="flex flex-col gap-2.5 px-6 pt-5 pb-6">
+    <div class="flex items-center justify-between gap-3">
+      <h3 class="text-2xl font-extrabold tracking-tight">{d.title}</h3>
+      {d.status === 'soon' && <Sticker small accent tilt={-3}>coming soon</Sticker>}
+      {d.status === 'live' && <Sticker small wobble={false}>{d.platform.toLowerCase()}</Sticker>}
+      {d.status === 'writeup' && <Sticker small wobble={false}>writeup</Sticker>}
+    </div>
+    <p class="text-base leading-relaxed opacity-85">{d.tagline}</p>
+    <div class="font-mono text-[13px] opacity-65">{d.stack.join(' · ')}</div>
+  </div>
+</a>

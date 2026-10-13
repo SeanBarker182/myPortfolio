@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import PostCard from '@/components/PostCard.astro';
+import Sticker from '@/components/Sticker.astro';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft || import.meta.env.DEV)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<Base title="Blog" description="Notes from the bench: React Native, performance, shipping apps, and the occasional home automation rabbit hole." og="/og/blog.png">
+  <section class="mt-16 flex flex-col gap-8">
+    <div class="flex flex-col gap-3">
+      <h1 class="font-hand text-7xl leading-none font-bold sm:text-8xl">Notes from the bench</h1>
+      <p class="max-w-[620px] text-xl leading-relaxed opacity-85">Things I learned the hard way, written down so you don't have to.</p>
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 pt-2">
+          {tags.map((t) => <Sticker small wobble={false}>{t}</Sticker>)}
+        </div>
+      )}
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {posts.map((p, i) => <PostCard post={p} index={i} />)}
+    </div>
+    {posts.length === 0 && <p class="text-lg opacity-75">Nothing published yet. Check back soon.</p>}
+  </section>
+</Base>

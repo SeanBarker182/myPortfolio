@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Sticker from '@/components/Sticker.astro';
+import Workbench from '@/components/illustrations/Workbench.astro';
+import House from '@/components/illustrations/House.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import PostCard from '@/components/PostCard.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import { site, yearsSince } from '@/data/site';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('posts', ({ data }) => !data.draft || import.meta.env.DEV))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+const [k1, k2] = site.kids;
+---
+
+<Base>
+  <div class="flex flex-col gap-26">
+    <!-- Hero -->
+    <section class="mt-16 flex flex-col items-center gap-12 md:flex-row">
+      <div class="flex flex-1 flex-col gap-6 md:basis-[540px]">
+        <div class="flex flex-wrap gap-2.5">
+          <Sticker tilt={-3} class="text-[21px]">senior product engineer</Sticker>
+          <Sticker tilt={2} class="text-[21px]">fort wayne, in</Sticker>
+        </div>
+        <h1 class="font-hand text-[64px] leading-[0.92] font-bold sm:text-[96px]">
+          Hi, I'm Sean.<br />I build the <span class="hl">whole thing.</span>
+        </h1>
+        <p class="max-w-[540px] text-[22px] leading-normal">
+          Mobile apps, web, backend, and the AI glue in between. If it needs to exist, I can build it, ship it, and make it feel good.
+        </p>
+        <div class="flex flex-wrap gap-3.5">
+          <a href="#contact" class="btn btn-primary hd">Say hello</a>
+          <a href="#work" class="btn hd3">See the work</a>
+        </div>
+        <div class="mt-1 flex flex-wrap gap-2.5">
+          <Sticker tilt={-2} class="text-xl">dad ×2</Sticker>
+          <Sticker tilt={2} class="text-xl">esp32 + lora</Sticker>
+          <Sticker tilt={-3} class="text-xl">home assistant</Sticker>
+          <Sticker tilt={3} class="text-xl">go hawks</Sticker>
+        </div>
+      </div>
+      <div class="hidden w-[480px] shrink-0 justify-center md:flex">
+        <Workbench class="h-auto w-[480px]" />
+      </div>
+    </section>
+
+    <!-- Selected work -->
+    <section id="work" class="reveal flex flex-col gap-8 scroll-mt-8">
+      <div class="flex flex-wrap items-baseline gap-4">
+        <h2 class="font-hand text-6xl leading-none font-bold">Things I shipped</h2>
+        <span class="text-lg opacity-75">Product through store submission. The color is the work.</span>
+      </div>
+      <div class="grid grid-cols-1 gap-7 md:grid-cols-2">
+        {projects.map((p, i) => <ProjectCard project={p} index={i} />)}
+      </div>
+    </section>
+
+    <!-- Writing -->
+    <section class="reveal flex flex-col gap-7">
+      <div class="flex flex-wrap items-baseline justify-between gap-5">
+        <h2 class="font-hand text-6xl leading-none font-bold">Notes from the bench</h2>
+        <a href="/blog" class="text-[17px] font-bold text-link">All posts →</a>
+      </div>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {posts.map((p, i) => <PostCard post={p} index={i} />)}
+      </div>
+    </section>
+
+    <!-- About blurb -->
+    <section class="reveal flex flex-col items-center gap-10 md:flex-row">
+      <div class="hidden w-[340px] shrink-0 justify-center md:flex">
+        <House class="h-auto w-[340px]" />
+      </div>
+      <div class="hd3 flex flex-1 flex-col gap-4 bg-paper px-10 py-9">
+        <h2 class="font-hand text-[52px] leading-none font-bold">The "I can do that" guy</h2>
+        <p class="text-lg leading-relaxed">
+          Staff Software Engineer at {site.employer} by day. The rest of the time I'm a dad to a
+          <span data-born={k1.born}>{yearsSince(k1.born)}</span>-year-old and a
+          <span data-born={k2.born}>{yearsSince(k2.born)}</span>-year-old, flashing ESP32s, wiring the house into Home Assistant, and
+          building things for people around Fort Wayne because someone said it couldn't be done.
+        </p>
+        <p class="text-lg leading-relaxed">I also use AI to wildly over-engineer small personal problems. My budget has a phone number.</p>
+        <a href="/about" class="text-[17px] font-bold text-link">More about me →</a>
+      </div>
+    </section>
+
+    <ContactSection />
+  </div>
+</Base>

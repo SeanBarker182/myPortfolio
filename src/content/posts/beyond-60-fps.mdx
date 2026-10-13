@@ -1,0 +1,35 @@
+---
+title: "Beyond 60 fps: building a real-time CAN bus dashboard with Nitro Modules and Skia"
+description: What it takes to render live vehicle telemetry in React Native without dropping frames.
+pubDate: 2025-06-01
+tags: [react native, performance, skia]
+canonical: https://shift.infinite.red/beyond-60-fps-building-a-real-time-can-bus-dashboard-with-nitro-modules-and-skia-d0f564f8d239
+canonicalLabel: Infinite Red's blog
+youtube: lnjeE42ZZV4
+---
+
+[Lede. Two sentences on why a vehicle dashboard is a hard rendering problem and what "beyond 60 fps" actually means here. The full text of the Medium post gets ported here with the canonical link kept.]
+
+## The constraint
+
+[CAN bus frames arrive at a rate the JS thread can't keep up with. What the naive React Native version did, and where it fell over.]
+
+## Reading the bus with a Nitro Module
+
+```ts
+interface CanBus extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
+  start(bitrate: number): void
+  onFrame(cb: (id: number, data: ArrayBuffer) => void): void
+  stop(): void
+}
+```
+
+## Drawing gauges with Skia
+
+[How the gauges are drawn on the UI thread with Reanimated shared values feeding Skia, so a frame never waits on React.]
+
+> **Rule of thumb:** if a value changes more than a few times a second, it never becomes React state.
+
+## What it measured
+
+[Frame times before and after, on which device, and the one number that mattered to the people riding in the vehicle.]

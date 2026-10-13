@@ -1,0 +1,41 @@
+---
+/**
+ * The backdrop sketch behind a case-study hero. Tents and bunting for now;
+ * each project can get its own scene later by adding a variant here.
+ */
+interface Props { class?: string; variant?: 'festival' | 'bench' }
+const { class: cls = '', variant = 'festival' } = Astro.props;
+---
+
+<svg
+  class:list={['wob', cls]}
+  viewBox="0 0 460 440"
+  aria-hidden="true"
+  fill="none"
+  stroke="var(--ink)"
+  stroke-width="5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M30 410 Q 230 390 430 410" stroke-width="6"></path>
+  {variant === 'festival' ? (
+    <>
+      <path d="M40 340 l40 -70 l40 70 z M120 340 l30 -50 l30 50 z" fill="var(--paper)"></path>
+      <path d="M330 340 l35 -60 l35 60 z" fill="var(--paper)"></path>
+      <path d="M20 80 l60 -30 l-10 70 z" fill="var(--accent)"></path>
+      <path d="M380 110 l60 -20 l-16 60 z" fill="var(--accent)"></path>
+      <path d="M100 60 q40 20 80 0 q40 -20 80 0 q40 20 80 0" stroke-width="4"></path>
+      <circle cx="400" cy="210" r="22" fill="var(--paper)"></circle>
+      <path d="M400 232 v30 M385 250 h30 M400 188 v-12 M416 194 l8 -8 M384 194 l-8 -8"></path>
+    </>
+  ) : (
+    <>
+      <rect x="40" y="300" width="90" height="56" rx="6" fill="var(--paper)"></rect>
+      <rect x="56" y="314" width="26" height="26" rx="4"></rect>
+      <path d="M96 314 h22 M96 328 h22 M96 342 h22" stroke-width="4"></path>
+      <path d="M330 380 l80 -70 l10 10 l-80 70 z" fill="var(--paper)"></path>
+      <path d="M60 110 l20 20 M100 100 v26 M46 150 h26" stroke="var(--accent)" stroke-width="5"></path>
+      <path d="M380 60 l16 16 M410 50 v22 M370 100 h22" stroke="var(--accent)" stroke-width="5"></path>
+    </>
+  )}
+</svg>

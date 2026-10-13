@@ -1,0 +1,89 @@
+---
+import Base from '@/layouts/Base.astro';
+import Sticker from '@/components/Sticker.astro';
+import House from '@/components/illustrations/House.astro';
+import { site, yearsSince } from '@/data/site';
+import { resume } from '@/data/resume';
+
+const [k1, k2] = site.kids;
+const a1 = yearsSince(k1.born);
+const a2 = yearsSince(k2.born);
+const facts = [
+  { title: 'Electronics', body: 'ESP32 boards, LoRa radios, and a home server rack that has grown past "just one more drive."', border: 'hd2' },
+  { title: 'Home Assistant', body: 'The house runs on it. [N] devices, [N] automations, and a doorbell that announces itself.', border: 'hd3' },
+  { title: 'Over-engineering', body: "I built a personal financial advisor I can text. It approves purchases, sets the monthly budget, and has no idea it's overkill.", border: 'hd2' },
+  { title: 'Community builds', body: 'If someone around Fort Wayne needs a thing that doesn\'t exist yet, I\'m usually the one who says "I can do that."', border: 'hd3' },
+  { title: 'Go Hawks', body: 'The Blackhawks are the only sport I watch. Yes, even now.', border: 'hd', hl: true },
+];
+---
+
+<Base title="About" description="Sean Barker: Senior Product Engineer, Staff Software Engineer at Infinite Red, dad, tinkerer, Fort Wayne." og="/og/about.png">
+  <div class="flex flex-col gap-22">
+    <section class="mt-16 flex flex-col items-center gap-12 md:flex-row">
+      <div class="flex flex-1 flex-col gap-6 md:basis-[520px]">
+        <h1 class="font-hand text-[60px] leading-[0.92] font-bold sm:text-[92px]">Someone said it <span class="hl">couldn't be done.</span></h1>
+        <p class="max-w-[560px] text-[21px] leading-normal">
+          That's usually how my projects start. I'm Sean, a {site.role} in the Fort Wayne, Indiana area. I've spent [N] years turning "we need an app for that" into something people actually use, and I still get a kick out of the moment it first runs on a real phone.
+        </p>
+        <div class="flex flex-wrap gap-2.5">
+          <Sticker tilt={-2} class="text-xl">staff engineer @ infinite red</Sticker>
+          <Sticker tilt={2} class="text-xl">dad to a <span data-born={k1.born}>{a1}</span>-year-old and a <span data-born={k2.born}>{a2}</span>-year-old</Sticker>
+        </div>
+      </div>
+      <div class="hidden w-[460px] shrink-0 justify-center md:flex">
+        <House class="h-auto w-[460px]" />
+      </div>
+    </section>
+
+    <section class="reveal flex flex-col gap-7">
+      <h2 class="font-hand text-[56px] leading-none font-bold">Where I've worked</h2>
+      <ol class="ml-3 flex flex-col border-l-[3px] border-ink pl-8">
+        {resume.experience.map((job, i) => (
+          <li class="relative flex flex-col gap-1.5 pb-9">
+            <span class="absolute top-1 -left-[45px] box-border h-5 w-5 rounded-full border-[3px] border-ink" style={`background:${i === 0 ? 'var(--accent)' : 'var(--paper)'}`} aria-hidden="true"></span>
+            <div class="font-mono text-[13px] opacity-65">{job.start} to {job.end}</div>
+            <div class="text-2xl font-extrabold">{job.title} <span class="font-semibold opacity-70">· {job.company}</span></div>
+            <div class="max-w-[720px] text-[17px] leading-normal">{job.bullets[0]}</div>
+          </li>
+        ))}
+      </ol>
+      <a href="/resume" class="self-start text-[17px] font-bold text-link">Full resume →</a>
+    </section>
+
+    <section class="reveal flex flex-col gap-7">
+      <div class="flex flex-wrap items-baseline gap-4">
+        <h2 class="font-hand text-[56px] leading-none font-bold">Off the clock</h2>
+        <span class="text-lg opacity-75">Mostly at home, mostly building something.</span>
+      </div>
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
+        <div class="hd flex flex-col gap-2 px-6 py-6">
+          <div class="font-hand text-4xl leading-none font-bold">Family first</div>
+          <p class="text-base leading-relaxed">
+            A <span data-born={k1.born}>{a1}</span>-year-old and a <span data-born={k2.born}>{a2}</span>-year-old keep the evenings loud and the weekends full. Everything else fits around them.
+          </p>
+        </div>
+        {facts.map((f) => (
+          <div class:list={['flex flex-col gap-2 px-6 py-6', f.border]}>
+            <div class="font-hand text-4xl leading-none font-bold">{f.hl ? <span class="hl">{f.title}</span> : f.title}</div>
+            <p class="text-base leading-relaxed">{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="reveal hd lift flex flex-col items-start gap-8 bg-paper px-10 py-9 md:flex-row md:items-center">
+      <div class="flex flex-1 flex-col gap-3">
+        <div class="font-hand text-[44px] leading-none font-bold">Right now</div>
+        <ul class="list-disc pl-6 text-lg leading-loose">
+          <li>Finishing <strong>Threadyard</strong>, a macOS app for watching your agents work.</li>
+          <li>Getting <strong>JAM Center</strong> and <strong>Abrupt</strong> through store review.</li>
+          <li>Writing about prepping apps for the iPhone Duo.</li>
+        </ul>
+      </div>
+      <div class="flex flex-col items-start gap-3">
+        <a href="/#contact" class="btn btn-primary hd2">Say hello</a>
+        <a href="/work" class="text-base font-bold text-link">or see the work →</a>
+      </div>
+    </section>
+  </div>
+</Base>

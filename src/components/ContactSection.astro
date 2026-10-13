@@ -1,0 +1,16 @@
+---
+import ContactForm from './ContactForm';
+---
+
+<section id="contact" class="reveal flex flex-col gap-10 md:flex-row md:gap-14">
+  <div class="flex flex-1 flex-col gap-4 md:basis-[360px]">
+    <h2 class="font-hand text-6xl leading-none font-bold">Let's build something</h2>
+    <p class="text-[19px] leading-relaxed">
+      New app, an existing one that needs help, or a problem you're not sure is solvable. Reach out and tell me about it.
+    </p>
+    <div class="font-mono text-[13px] opacity-65">Spam-protected by Cloudflare Turnstile. No puzzles.</div>
+  </div>
+  <div class="flex-1 md:basis-[520px]">
+    <ContactForm client:visible />
+  </div>
+</section>

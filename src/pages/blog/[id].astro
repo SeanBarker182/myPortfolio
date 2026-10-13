@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Sticker from '@/components/Sticker.astro';
+import Smiley from '@/components/Smiley.astro';
+import { readingTime, site } from '@/data/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft || import.meta.env.DEV);
+  const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return sorted.map((post, i) => ({
+    params: { id: post.id },
+    props: { post, newer: sorted[i - 1], older: sorted[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const date = d.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+
+<Base title={d.title} description={d.description} og={`/og/blog/${post.id}.png`} canonical={d.canonical} type="article">
+  <article class="mt-12 flex flex-col gap-12">
+    <header class="mx-auto flex w-full max-w-[820px] flex-col gap-5">
+      <a href="/blog" class="text-base font-bold text-link no-underline">← All posts</a>
+      {d.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {d.tags.map((t) => <Sticker small wobble={false}>{t}</Sticker>)}
+        </div>
+      )}
+      <h1 class="font-hand text-[52px] leading-[0.95] font-bold sm:text-[76px]">{d.title}</h1>
+      <div class="flex flex-wrap gap-4 font-mono text-[13px] opacity-70">
+        <time datetime={d.pubDate.toISOString()}>{date}</time>
+        <span>{readingTime(post.body)} min read</span>
+        {d.canonical && (
+          <span>
+            Originally published on <a href={d.canonical} class="text-link underline">{d.canonicalLabel ?? 'another site'}</a>
+          </span>
+        )}
+      </div>
+    </header>
+
+    {d.youtube && (
+      <div class="mx-auto w-full max-w-[980px]">
+        <div class="hd lift bg-paper p-3">
+          <lite-youtube videoid={d.youtube} class="block aspect-video w-full overflow-hidden rounded-xl bg-black"></lite-youtube>
+        </div>
+      </div>
+    )}
+
+    <div class="prose mx-auto w-full max-w-[760px]">
+      <Content />
+    </div>
+
+    <footer class="mx-auto flex w-full max-w-[760px] flex-col gap-7">
+      <div class="hd flex flex-col items-start gap-5 bg-paper px-6 py-5 sm:flex-row sm:items-center">
+        <Smiley size={64} />
+        <div class="flex flex-col gap-1">
+          <div class="text-lg font-extrabold">{site.name}</div>
+          <div class="text-[15px] leading-normal opacity-80">
+            {site.role} in Fort Wayne. Builds the whole thing. <a href="/#contact" class="text-link font-semibold">Say hello</a> if you're working on something like this.
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        {older ? <a href={`/blog/${older.id}`} class="btn hd2">← {older.data.title.length > 32 ? 'Older' : older.data.title}</a> : <span />}
+        {newer && <a href={`/blog/${newer.id}`} class="btn hd3">{newer.data.title.length > 32 ? 'Newer' : newer.data.title} →</a>}
+      </div>
+    </footer>
+  </article>
+</Base>
+
+<script>
+  class LiteYouTube extends HTMLElement {
+    connectedCallback() {
+      const id = this.getAttribute('videoid');
+      if (!id || this.dataset.ready) return;
+      this.dataset.ready = '1';
+      this.style.backgroundImage = `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
+      this.style.backgroundSize = 'cover';
+      this.style.backgroundPosition = 'center';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Play video');
+      btn.className = 'flex h-full w-full items-center justify-center';
+      btn.innerHTML =
+        '<svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40" fill="#fff" stroke="#111" stroke-width="4"></circle><path d="M34 26 l26 16 l-26 16 z" fill="#111"></path></svg>';
+      btn.addEventListener('click', () => {
+        const f = document.createElement('iframe');
+        f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+        f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+        f.allowFullscreen = true;
+        f.title = 'YouTube video';
+        f.className = 'h-full w-full';
+        this.replaceChildren(f);
+      });
+      this.replaceChildren(btn);
+    }
+  }
+  if (!customElements.get('lite-youtube')) customElements.define('lite-youtube', LiteYouTube);
+</script>

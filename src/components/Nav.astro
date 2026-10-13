@@ -1,0 +1,17 @@
+---
+import Smiley from './Smiley.astro';
+import { nav, site } from '@/data/site';
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href + '/')) || path === href + '/';
+---
+
+<header class="flex flex-wrap items-center justify-between gap-4">
+  <a href="/" class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-ink no-underline" aria-label={`${site.name}, home`}>
+    <Smiley />
+    <span>{site.name}</span>
+  </a>
+  <nav class="flex flex-wrap items-center gap-x-7 gap-y-3" aria-label="Primary">
+    {nav.map((n) => <a href={n.href} class="navlink" aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a>)}
+    <a href="/#contact" class="btn btn-primary btn-sm hd2">Contact</a>
+  </nav>
+</header>

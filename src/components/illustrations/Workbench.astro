@@ -1,0 +1,40 @@
+---
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+
+<svg
+  class:list={['wob', cls]}
+  viewBox="0 0 480 520"
+  role="img"
+  aria-label="Sketch of a workbench: a laptop and a phone showing colorful apps, a soldering iron, a coffee mug and a small circuit board"
+  fill="none"
+  stroke="var(--ink)"
+  stroke-width="5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 470 Q 240 450 460 470" stroke-width="6"></path>
+  <rect x="60" y="150" width="300" height="200" rx="14" fill="var(--paper)"></rect>
+  <path d="M40 360 h340 l-16 26 h-308 z" fill="var(--paper)"></path>
+  <rect x="76" y="166" width="268" height="168" rx="8" fill="#2563eb" stroke="none"></rect>
+  <rect x="92" y="184" width="100" height="12" rx="6" fill="#fff" opacity=".85" stroke="none"></rect>
+  <rect x="92" y="208" width="236" height="52" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="92" y="270" width="110" height="48" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="218" y="270" width="110" height="48" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="372" y="220" width="86" height="176" rx="18" fill="var(--paper)"></rect>
+  <rect x="382" y="234" width="66" height="148" rx="10" fill="#0d9488" stroke="none"></rect>
+  <rect x="392" y="250" width="40" height="8" rx="4" fill="#fff" opacity=".85" stroke="none"></rect>
+  <rect x="392" y="268" width="46" height="40" rx="8" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="392" y="316" width="46" height="40" rx="8" fill="#fff" opacity=".35" stroke="none"></rect>
+  <path d="M60 420 h56 v40 h-56 z M116 430 q20 0 20 14 q0 14 -20 14" fill="var(--paper)"></path>
+  <path d="M74 404 q-6 -10 0 -18 M94 404 q-6 -10 0 -18" stroke-width="4"></path>
+  <path d="M300 440 l100 -90 l10 10 l-100 90 z" fill="var(--paper)"></path>
+  <path d="M410 350 l24 -22" stroke-width="4"></path>
+  <rect x="180" y="400" width="90" height="56" rx="6" fill="var(--paper)"></rect>
+  <rect x="196" y="414" width="26" height="26" rx="4"></rect>
+  <path d="M236 414 h22 M236 428 h22 M236 442 h22" stroke-width="4"></path>
+  <path d="M60 60 l20 20 M100 50 v26 M46 100 h26" stroke="var(--accent)" stroke-width="5"></path>
+  <path d="M400 80 l16 16 M430 70 v22 M390 120 h22" stroke="var(--accent)" stroke-width="5"></path>
+  <path d="M200 90 q30 -40 60 0 q-30 40 -60 0" stroke-width="4"></path>
+</svg>

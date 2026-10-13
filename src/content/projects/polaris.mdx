@@ -1,0 +1,30 @@
+---
+title: Polaris
+tagline: A real-time CAN bus dashboard that stays beyond 60 fps using Nitro Modules and Skia.
+description: Polaris is a real-time vehicle dashboard built in React Native with Nitro Modules and Skia, rendering live CAN bus telemetry beyond 60 fps.
+color: "#ea580c"
+status: writeup
+platform: React Native
+order: 3
+stack: [React Native, Nitro Modules, Skia, Reanimated]
+role: Design, native modules, rendering pipeline. Built on my own.
+links:
+  writeup: /blog/beyond-60-fps
+screens: [Tachometer, Speed, Diagnostics]
+video: lnjeE42ZZV4
+next: big-fort-fest
+---
+
+## The problem
+
+Vehicle telemetry arrives faster than the React Native JS thread can redraw. A naive implementation drops frames the moment the engine does anything interesting.
+
+## The build
+
+The bus is read in a Nitro Module and handed to the UI thread without serializing through JSON. Gauges are drawn with Skia from Reanimated shared values, so a frame never waits on React.
+
+The full writeup, with the numbers, is on the blog: [Beyond 60 fps](/blog/beyond-60-fps).
+
+## How it went
+
+[Frame times before and after, on which device, and the one number that mattered.]

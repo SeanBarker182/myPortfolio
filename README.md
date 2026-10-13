@@ -1,34 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# seanbarker.dev
 
-## Getting Started
+Personal site for Sean Barker, Senior Product Engineer. Astro 7, React islands, Tailwind 4, MDX content collections, deployed on Vercel.
 
-First, run the development server:
+The design direction and decisions live in [PLAN.md](./PLAN.md).
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm install
+cp .env.example .env   # optional: contact form keys
+npm run dev            # http://localhost:4321
+npm run build          # production build into dist/
+npm run check          # type check
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Content
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- `src/content/projects/*.mdx` — one case study per project. Frontmatter drives the card, hero, facts strip, store links, and OG image. `screens` are labels rendered as colored placeholders until real screenshots are added through the `Shot` component's `src` prop.
+- `src/content/posts/*.mdx` — blog posts. Set `canonical` and `canonicalLabel` when a post was first published elsewhere. `draft: true` hides a post from production builds and the feed.
+- `src/data/site.ts` — name, role, socials, kids' birthdates (ages are computed at render time and corrected in the browser).
+- `src/data/resume.ts` — the resume page's data.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Design system
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Ink on paper, inspired by Joshua Vides. See `src/styles/global.css` for the tokens and component classes:
 
-## Learn More
+- `hd`, `hd2`, `hd3` — hand-drawn borders, rotate them across siblings.
+- `sticker`, `sticker-accent`, `sticker-sm` — Caveat pills.
+- `btn`, `btn-primary`, `field`, `card`, `phone`, `mac`, `shot`, `prose`.
+- `wob` — the SVG wobble filter. Only for stickers, the smiley, and illustrations.
+- `hl` — highlighter stroke behind text.
 
-To learn more about Next.js, take a look at the following resources:
+Illustrations are inline SVG components in `src/components/illustrations/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contact form
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`src/components/ContactForm.tsx` posts to `src/pages/api/contact.ts`, an on-demand Vercel function. It checks a honeypot field, verifies Cloudflare Turnstile, and sends through Resend. Without keys configured it logs submissions in dev and refuses them in production. Environment variables are listed in `.env.example`.
 
-## Deploy on Vercel
+## OG images
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`src/pages/og/[...route].png.ts` renders a 1200×630 card per page at build time with satori. Fonts for it are static TTFs in `src/assets/fonts/` (satori cannot read variable fonts).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Favicon
+
+`public/favicon.svg` inverts for dark browser chrome. The PNG sizes and the source SVGs are in `design/`.

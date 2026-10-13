@@ -1,0 +1,27 @@
+---
+/**
+ * A screenshot slot. Until a real image is supplied it renders a flat color
+ * block with a label, so layouts can be judged before assets exist.
+ */
+interface Props {
+  color: string;
+  label: string;
+  src?: string;
+  alt?: string;
+  class?: string;
+}
+const { color, label, src, alt = '', class: cls = '' } = Astro.props;
+---
+
+{
+  src ? (
+    <img src={src} alt={alt} class:list={['h-full w-full object-cover', cls]} loading="lazy" decoding="async" />
+  ) : (
+    <div class:list={['shot h-full w-full', cls]} style={`background:${color}`} role="img" aria-label={`${label} placeholder`}>
+      <div class="bar" style="top:14%"></div>
+      <div class="bar" style="top:24%;right:45%"></div>
+      <div class="bar" style="top:42%;height:60px;border-radius:12px"></div>
+      <div class="lbl">[{label}]</div>
+    </div>
+  )
+}

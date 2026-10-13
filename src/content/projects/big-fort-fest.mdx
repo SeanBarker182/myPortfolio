@@ -1,0 +1,45 @@
+---
+title: Big Fort Fest
+tagline: "[One line on Big Fort Fest and what the app does for attendees]"
+description: The official festival app for Big Fort Fest, live on the App Store and Play Store.
+color: "#2563eb"
+status: live
+platform: iOS · Android
+order: 4
+stack: [React Native, Expo, TypeScript]
+role: Product, design, iOS and Android build, backend, store submission, support. Built on my own.
+timeline: "[Start month] to festival weekend, [N] weeks."
+links:
+  appStore: "#"
+  playStore: "#"
+  site: "#"
+screens: [Schedule, Map, Lineup, Vendors, Notifications]
+next: polaris
+---
+
+## The problem
+
+[Two or three sentences on the situation before the app existed. What were attendees or organizers struggling with, and why did an app beat a website or a printed schedule?]
+
+[What the constraints were: timeline to the festival date, spotty connectivity on the grounds, a one-person team.]
+
+## The build
+
+### Offline first, because the field has no signal
+
+[How the schedule, map, and vendor data are cached so the app works with zero bars. What syncs when a connection comes back.]
+
+### A schedule that knows what you care about
+
+[Favorites, reminders, and how push notifications were scoped so they were useful and not annoying.]
+
+```ts
+const upNext = schedule
+  .filter((s) => favorites.has(s.id))
+  .filter((s) => s.startsAt > now)
+  .sort(byStart)[0];
+```
+
+## How it went
+
+[What happened at the festival: downloads, usage during the weekend, feedback from organizers. One honest sentence on what you would change next year.]

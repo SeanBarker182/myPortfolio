@@ -1,0 +1,11 @@
+---
+interface Props {
+  class?: string;
+  tilt?: number;
+}
+const { class: cls = '', tilt = 0 } = Astro.props;
+---
+
+<div class:list={['phone', cls]} style={tilt ? `transform: rotate(${tilt}deg)` : undefined}>
+  <div><slot /></div>
+</div>

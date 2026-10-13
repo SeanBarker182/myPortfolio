@@ -1,0 +1,17 @@
+---
+interface Props {
+  tilt?: number;
+  accent?: boolean;
+  small?: boolean;
+  wobble?: boolean;
+  class?: string;
+}
+const { tilt = 0, accent = false, small = false, wobble = true, class: cls = '' } = Astro.props;
+---
+
+<span
+  class:list={['sticker', { 'sticker-accent': accent, 'sticker-sm': small, wob: wobble }, cls]}
+  style={tilt ? `transform: rotate(${tilt}deg)` : undefined}
+>
+  <slot />
+</span>

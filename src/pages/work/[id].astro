@@ -1,0 +1,123 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Sticker from '@/components/Sticker.astro';
+import Shot from '@/components/Shot.astro';
+import Phone from '@/components/Phone.astro';
+import Scene from '@/components/illustrations/Scene.astro';
+import StoreLinks from '@/components/StoreLinks.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+const next = d.next ? await getEntry('projects', d.next) : undefined;
+const statusLabel = d.status === 'live' ? `live on ${d.platform.toLowerCase()}` : d.status === 'soon' ? 'coming soon' : 'writeup';
+const isMac = d.platform.toLowerCase().includes('mac');
+const screens = d.screens.length ? d.screens : ['Screen'];
+const variant = project.id === 'big-fort-fest' ? 'festival' : 'bench';
+---
+
+<Base title={d.title} description={d.description} og={`/og/work/${project.id}.png`} type="article">
+  <article class="mt-12 flex flex-col gap-18">
+    <!-- Hero -->
+    <section class="flex flex-col items-center gap-12 md:flex-row">
+      <div class="flex flex-1 flex-col gap-5 md:basis-[520px]">
+        <a href="/work" class="text-base font-bold text-link no-underline">← All work</a>
+        <Sticker tilt={-2} class="self-start text-xl" accent={d.status === 'soon'}>{statusLabel}</Sticker>
+        <h1 class="font-hand text-[64px] leading-[0.92] font-bold sm:text-[96px]">{d.title}</h1>
+        <p class="max-w-[540px] text-[21px] leading-normal">{d.tagline}</p>
+        <StoreLinks project={project} />
+      </div>
+      <div class="relative hidden h-[440px] w-[460px] shrink-0 items-end justify-center md:flex">
+        <Scene variant={variant} class="absolute inset-0 h-full w-full" />
+        {isMac ? (
+          <div class="mac relative h-[260px] w-[400px]"><div><Shot color={d.color} label={screens[0]} /></div></div>
+        ) : (
+          <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0]} /></Phone>
+        )}
+      </div>
+    </section>
+
+    <!-- Facts -->
+    <section class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <div class="hd flex flex-col gap-1.5 px-6 py-5">
+        <div class="font-mono text-xs tracking-[.08em] uppercase opacity-65">Role</div>
+        <div class="text-[17px] leading-normal">{d.role}</div>
+      </div>
+      <div class="hd2 flex flex-col gap-1.5 px-6 py-5">
+        <div class="font-mono text-xs tracking-[.08em] uppercase opacity-65">Stack</div>
+        <div class="font-mono text-sm leading-relaxed">{d.stack.join(' · ')}</div>
+      </div>
+      <div class="hd3 flex flex-col gap-1.5 px-6 py-5">
+        <div class="font-mono text-xs tracking-[.08em] uppercase opacity-65">{d.timeline ? 'Timeline' : 'Platform'}</div>
+        <div class="text-[17px] leading-normal">{d.timeline ?? d.platform}</div>
+      </div>
+    </section>
+
+    <!-- Body with media rail -->
+    <section class="flex flex-col gap-10 md:flex-row md:items-start">
+      <div class="prose min-w-0 flex-1 md:basis-[620px]">
+        <Content />
+      </div>
+      <aside class="flex flex-col gap-5 md:w-[400px] md:shrink-0">
+        {d.video && (
+          <div class="hd3 flex flex-col gap-2.5 bg-paper p-3">
+            <lite-youtube videoid={d.video} class="block aspect-video w-full overflow-hidden rounded-xl bg-black"></lite-youtube>
+            <div class="px-2 pb-1 text-sm opacity-70">A quick walkthrough.</div>
+          </div>
+        )}
+        {screens.slice(1, 4).map((label, i) =>
+          isMac ? (
+            <div class="mac h-[240px] w-full"><div><Shot color={d.color} label={label} /></div></div>
+          ) : (
+            <Phone class="mx-auto h-[380px] w-[190px]" tilt={i % 2 ? 0.5 : -0.5}><Shot color={d.color} label={label} /></Phone>
+          ),
+        )}
+      </aside>
+    </section>
+
+    <!-- Next -->
+    {next && (
+      <section class="flex flex-wrap items-center justify-between gap-6">
+        <a href="/work" class="text-[17px] font-bold text-link">← All work</a>
+        <a href={`/work/${next.id}`} class="btn hd2">Next: {next.data.title} →</a>
+      </section>
+    )}
+  </article>
+</Base>
+
+<script>
+  // Lightweight YouTube embed: a thumbnail that swaps in the privacy-enhanced iframe on click.
+  class LiteYouTube extends HTMLElement {
+    connectedCallback() {
+      const id = this.getAttribute('videoid');
+      if (!id || this.dataset.ready) return;
+      this.dataset.ready = '1';
+      this.style.backgroundImage = `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
+      this.style.backgroundSize = 'cover';
+      this.style.backgroundPosition = 'center';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Play video');
+      btn.className = 'flex h-full w-full items-center justify-center';
+      btn.innerHTML =
+        '<svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40" fill="#fff" stroke="#111" stroke-width="4"></circle><path d="M34 26 l26 16 l-26 16 z" fill="#111"></path></svg>';
+      btn.addEventListener('click', () => {
+        const f = document.createElement('iframe');
+        f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+        f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+        f.allowFullscreen = true;
+        f.title = 'YouTube video';
+        f.className = 'h-full w-full';
+        this.replaceChildren(f);
+      });
+      this.replaceChildren(btn);
+    }
+  }
+  if (!customElements.get('lite-youtube')) customElements.define('lite-youtube', LiteYouTube);
+</script>

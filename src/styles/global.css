@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* Ink on paper. Dark mode inverts to white lines on black. */
+:root {
+  --ink: #111111;
+  --paper: #ffffff;
+  --accent: #fbbf24;
+  --link: #b45309;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f5f5f5;
+    --paper: #0f0f0f;
+    --link: #fbbf24;
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-accent: var(--accent);
+  --color-link: var(--link);
+  --font-hand: var(--font-caveat), "Caveat", cursive;
+  --font-sans: var(--font-figtree), "Figtree", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html { background: var(--paper); color: var(--ink); }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--accent); color: #111; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+}
+
+@layer components {
+  /* Hand-drawn borders: uneven radii make a straight CSS box read as inked. Three variants, rotate them. */
+  .hd  { border: 3px solid var(--ink); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+  .hd2 { border: 3px solid var(--ink); border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px; }
+  .hd3 { border: 3px solid var(--ink); border-radius: 225px 25px 240px 20px / 20px 230px 15px 245px; }
+  .hd-thin { border: 2px solid var(--ink); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+  .lift { box-shadow: 6px 6px 0 var(--ink); }
+  .lift-sm { box-shadow: 3px 3px 0 var(--ink); }
+
+  /* Procedural wobble. Only for stickers, the smiley and illustrations. Never text, inputs or code. */
+  .wob { filter: url(#wob); }
+
+  .sticker {
+    display: inline-block; padding: 6px 16px; border: 3px solid var(--ink); border-radius: 999px;
+    background: var(--paper); color: var(--ink); font-family: var(--font-hand); font-size: 1.375rem; line-height: 1.1;
+    white-space: nowrap;
+  }
+  .sticker-sm { font-size: 1.0625rem; padding: 3px 12px; border-width: 2px; }
+  .sticker-accent { background: var(--accent); color: #111; }
+
+  /* Highlighter: the accent as a marker stroke behind text */
+  .hl {
+    background: linear-gradient(transparent 55%, var(--accent) 55%, var(--accent) 92%, transparent 92%);
+    padding: 0 4px; color: var(--ink);
+  }
+  @media (prefers-color-scheme: dark) { .hl { color: var(--ink); } }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px;
+    border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+    font-size: 1.125rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: box-shadow .12s ease, transform .12s ease;
+  }
+  .btn:hover { box-shadow: 3px 3px 0 var(--ink); transform: translate(-1px, -1px); }
+  .btn:active { box-shadow: none; transform: translate(1px, 1px); }
+  .btn-primary { background: var(--accent); color: #111; }
+  .btn-sm { min-height: 44px; font-size: 1rem; padding: 0 20px; }
+
+  .field {
+    width: 100%; box-sizing: border-box; min-height: 52px; padding: 12px 16px; border: 2px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background: var(--paper); color: var(--ink); font-size: 1.0625rem;
+  }
+  .field:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .navlink { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 1.0625rem; }
+  .navlink:hover, .navlink[aria-current="page"] {
+    text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 5px;
+  }
+
+  .card { display: flex; flex-direction: column; text-decoration: none; color: var(--ink); background: var(--paper); overflow: hidden; transition: box-shadow .12s ease, transform .12s ease; }
+  .card:hover { box-shadow: 6px 6px 0 var(--ink); transform: translate(-2px, -2px); }
+
+  /* Screenshot placeholders: the only full-color surfaces on the page */
+  .shot { position: relative; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .shot .bar { position: absolute; left: 12%; right: 12%; height: 10px; background: rgba(255,255,255,.55); border-radius: 6px; }
+  .shot .lbl { position: relative; margin-bottom: 14px; color: #fff; font-size: .8125rem; font-weight: 600; text-align: center; padding: 0 10px; }
+
+  /* Device frames drawn with the same ink */
+  .phone { border: 4px solid var(--ink); border-radius: 36px; background: var(--paper); padding: 10px; box-sizing: border-box; }
+  .phone > * { border-radius: 24px; overflow: hidden; width: 100%; height: 100%; }
+  .mac { border: 4px solid var(--ink); border-radius: 14px; background: var(--paper); padding: 8px; box-sizing: border-box; }
+  .mac > * { border-radius: 8px; overflow: hidden; width: 100%; height: 100%; }
+
+  /* Long-form prose for posts and case studies */
+  .prose { font-size: 1.1875rem; line-height: 1.65; }
+  .prose > * + * { margin-top: 1.25em; }
+  .prose h2 { font-family: var(--font-hand); font-size: 3rem; line-height: 1; font-weight: 700; margin-top: 1.6em; }
+  .prose h3 { font-size: 1.5rem; font-weight: 800; margin-top: 1.4em; }
+  .prose a { color: var(--link); font-weight: 600; }
+  .prose strong { font-weight: 800; }
+  .prose ul, .prose ol { padding-left: 1.4em; }
+  .prose li + li { margin-top: .4em; }
+  .prose pre { padding: 18px 20px; font-size: .875rem; line-height: 1.6; overflow-x: auto; border: 2px solid var(--ink); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; background: var(--paper) !important; }
+  .prose code { font-family: var(--font-mono); }
+  .prose :not(pre) > code { font-size: .9em; padding: 1px 6px; border: 2px solid var(--ink); border-radius: 8px; }
+  .prose blockquote { padding: 20px 26px; border: 3px solid var(--ink); border-radius: 225px 25px 240px 20px / 20px 230px 15px 245px; font-size: 1.25rem; }
+  .prose img, .prose video, .prose iframe { max-width: 100%; border-radius: 12px; }
+  .prose figure { margin: 0; }
+  .prose figcaption { font-size: .875rem; opacity: .7; margin-top: 10px; }
+  .prose hr { border: 0; height: 3px; background: var(--ink); }
+}
+
+/* Draw-on reveal for sections. Disabled under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Only hide-then-reveal when the script that reveals is running. */
+  html.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  html.js .reveal.in { opacity: 1; transform: none; }
+  .wob-hover:hover { animation: wiggle .5s ease-in-out; }
+  @keyframes wiggle { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-2deg) } 75% { transform: rotate(2deg) } }
+}
