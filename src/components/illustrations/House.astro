@@ -5,9 +5,9 @@ const { class: cls = '' } = Astro.props;
 
 <svg
   class:list={['wob', cls]}
-  viewBox="0 0 450 320"
+  viewBox="0 0 480 320"
   role="img"
-  aria-label="Sketch of a family of four in front of a house with a radio antenna on the roof, a hockey stick leaning on the wall, and a Polaris Ranger parked beside it"
+  aria-label="Sketch of a family of four in front of a house with a radio antenna on the roof, a hockey stick leaning on the wall, and a laptop, phone and ESP32 beside it"
   fill="none"
   stroke="var(--ink)"
   stroke-width="5"
@@ -15,7 +15,7 @@ const { class: cls = '' } = Astro.props;
   stroke-linejoin="round"
 >
   <!-- ground -->
-  <path d="M8 302 q110 10 220 0 t214 0" stroke-width="5"></path>
+  <path d="M8 302 q118 10 236 0 t228 0" stroke-width="5"></path>
 
   <!-- house -->
   <path d="M140 142 v158 h160 v-158" fill="var(--paper)"></path>
@@ -48,15 +48,15 @@ const { class: cls = '' } = Astro.props;
   <circle cx="116" cy="252" r="8"></circle>
   <path d="M116 260 v18 M116 266 l-7 7 M116 266 l7 7 M116 278 l-5 22 M116 278 l5 22"></path>
 
-  <!-- the Ranger -->
-  <path d="M364 266 h76 q6 0 6 6 v12 q0 6 -6 6 h-76 q-6 0 -6 -6 v-12 q0 -6 6 -6 z" fill="var(--paper)"></path>
-  <path d="M374 266 v-38 q0 -4 4 -4 h44 q4 0 4 4 v38" stroke-width="4"></path>
-  <path d="M370 224 h60" stroke-width="4"></path>
-  <path d="M380 232 l-7 30" stroke-width="3"></path>
-  <path d="M396 258 h20 v8" stroke-width="3"></path>
-  <circle cx="380" cy="290" r="12" fill="var(--paper)"></circle>
-  <circle cx="380" cy="290" r="4"></circle>
-  <circle cx="426" cy="290" r="12" fill="var(--paper)"></circle>
-  <circle cx="426" cy="290" r="4"></circle>
-  <circle cx="443" cy="274" r="4" fill="var(--accent)" stroke="none"></circle>
+  <!-- a laptop, a phone and an ESP32 beside the house -->
+  <rect x="388" y="236" width="64" height="42" rx="4" fill="var(--paper)"></rect>
+  <rect x="394" y="241" width="52" height="32" rx="2" fill="#2563eb" stroke="none"></rect>
+  <rect x="400" y="246" width="22" height="4" rx="2" fill="#fff" opacity=".85" stroke="none"></rect>
+  <rect x="400" y="254" width="40" height="14" rx="3" fill="#fff" opacity=".35" stroke="none"></rect>
+  <path d="M382 280 h76 l-5 8 h-66 z" fill="var(--paper)"></path>
+  <rect x="458" y="248" width="16" height="42" rx="4" fill="var(--paper)" stroke-width="4"></rect>
+  <rect x="461" y="252" width="10" height="34" rx="2" fill="#0d9488" stroke="none"></rect>
+  <rect x="372" y="290" width="24" height="11" rx="2" fill="var(--paper)" stroke-width="3"></rect>
+  <rect x="375" y="293" width="6" height="5" rx="1" stroke-width="2"></rect>
+  <path d="M385 293 h7 M385 296 h7 M385 299 h7" stroke-width="2"></path>
 </svg>
