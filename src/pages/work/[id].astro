@@ -39,7 +39,7 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : heroFrame === 'pho
         {heroFrame === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
         {heroFrame === 'tablet' && <div class="tablet relative aspect-[1.5] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div></div>}
         {heroFrame === 'watch' && <div class="watch relative h-[260px] w-[220px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
-        {heroFrame === 'none' && <div class="relative w-[236px] overflow-hidden rounded-2xl lift"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div>}
+        {heroFrame === 'none' && <div class="relative h-[424px] w-[236px] overflow-hidden rounded-2xl lift"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div>}
         {heroFrame === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
       </div>
     </section>
