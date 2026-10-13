@@ -1,45 +1,66 @@
 ---
 title: Big Fort Fest
 tagline: "Experience the best of Big Fort Fest-schedules, tickets, maps & more, all in your pocket."
-description: The official festival app for Big Fort Fest, live on the App Store and Play Store.
+description: "The official app for Big Fort Fest, Fort Wayne's new three-day summer festival at Headwaters Park. Schedule, directory, saved events, tickets, and a CMS the organizers run themselves. Live on the App Store and Play Store."
 color: "#2563eb"
 status: live
 platform: iOS · Android
+device: phone
 order: 4
-stack: [React Native, Expo, Sanity]
-role: Product, design, iOS and Android build, backend, store submission, support. Built on my own.
+year: 2025
+stack: [React Native, Expo, expo-router, Sanity, TanStack Query, NativeWind, Reanimated, EAS]
+role: "Product, design, iOS and Android build, the CMS, store submission, support through the weekend. Built on my own."
 timeline: "April '25 to festival weekend, 20 weeks."
 links:
   appStore: "https://apps.apple.com/us/app/big-fort-fest/id6746877297"
   playStore: "https://play.google.com/store/apps/details?id=com.bigfortfest.bff"
-  site: "#"
-screens: [Schedule, Map, Lineup, Vendors, Notifications]
+  site: "https://bigfortfest.com"
+screens:
+  - label: Home
+    src: /work/big-fort-fest/home.jpg
+    alt: App Store screenshot of the Big Fort Fest home screen with the festival logo, a welcome card, and the next event
+    frame: none
+  - label: Schedule
+    src: /work/big-fort-fest/schedule.jpg
+    alt: App Store screenshot of the schedule, with day tabs and a list of events to save
+    frame: none
+  - label: Directory
+    src: /work/big-fort-fest/directory.jpg
+    alt: App Store screenshot of the directory, listing artists and vendors with type filters
+    frame: none
 next: polaris
 ---
 
 ## The problem
 
-[Two or three sentences on the situation before the app existed. What were attendees or organizers struggling with, and why did an app beat a website or a printed schedule?]
+In February 2025 the Three Rivers Festival, Fort Wayne's summer festival for more than fifty years, filed for bankruptcy. Jake and Jes Farris, the brothers behind the Fort Wayne Tattoo Festival, decided the city shouldn't lose its July weekend and announced Big Fort Fest for the same Headwaters Park slot: three nights of national acts, food trucks, a vendor market, and free family programming. Bone Thugs-N-Harmony, Breland, and Theory of a Deadman headlined.
 
-[What the constraints were: timeline to the festival date, spotty connectivity on the grounds, a one-person team.]
+A first-year festival has a first-year problem. The lineup, the schedule, the vendors, and the sponsors all keep changing until the gates open, and the people changing them aren't developers. The app had to ship before the festival existed and keep up with it without a release.
 
 ## The build
 
-### Offline first, because the field has no signal
+### A CMS the organizers run
 
-[How the schedule, map, and vendor data are cached so the app works with zero bars. What syncs when a connection comes back.]
+Everything on screen comes from Sanity. Events, participants, festival days, locations, and sponsors are content types, and the home and about screens are singletons the organizers edit directly: which event is featured, which concerts headline the carousel, the FAQ, the sponsor grid. Flags for featured and sort order let them reorder the app from a browser. The Studio lives in the same monorepo with staging and production workspaces, and its schema generates the app's TypeScript types, so a content change that would break a screen fails in the editor, not in someone's pocket at the park.
 
-### A schedule that knows what you care about
+### Built for the weekend
 
-[Favorites, reminders, and how push notifications were scoped so they were useful and not annoying.]
+The schedule opens on today if today is a festival day, grouped into featured, performances, activities, food, and markets. An event has what you'd actually need standing in a field: save it, add it to your calendar, open the stage in Apple or Google Maps, share it as a deep link, and buy tickets by tier in an in-app browser. The directory covers artists, food vendors, market vendors, family-activity hosts, and nonprofits, with search and a type filter.
 
-```ts
-const upNext = schedule
-  .filter((s) => favorites.has(s.id))
-  .filter((s) => s.startsAt > now)
-  .sort(byStart)[0];
-```
+At launch the app prefetches the home page, the about page, the sponsors, and every day's events, and holds the splash until the home content is loaded. The splash itself is an animated reveal of the logo rather than a static image, because a five-second delay feels shorter when something is moving.
+
+### Updates without a release
+
+Expo Updates, keyed to the app version, meant fixes went out over the air during festival week. The store history tells the story: 1.0 on June 23, 1.0.1 on June 29 with concerts on the home page and a time zone fix, 1.0.2 on July 7 with a featured event section and a new directory category for the family programming. Gates opened July 10.
+
+### Design
+
+Coral, gold, and teal on cream, with Lilita One for headings and Nunito for body text. Playful enough for a festival, legible in sun. Light mode only, on purpose.
 
 ## How it went
 
-[What happened at the festival: downloads, usage during the weekend, feedback from organizers. One honest sentence on what you would change next year.]
+The app went live two and a half weeks before the inaugural festival and ran through all three nights, July 10 to 12, 2025, at Headwaters Park. The organizers managed every schedule change themselves. Five stars on the App Store, no data collected, and the festival is already planning 2026.
+
+## What it demonstrates
+
+Shipping a complete consumer app on a hard date for a client who had never had one. Choosing a content model so non-technical organizers own the product after launch. And the unglamorous parts: EAS builds for two stores, over-the-air fixes, time zones, calendars, maps, deep links, and a splash screen that hides the network.
