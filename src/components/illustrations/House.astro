@@ -1,4 +1,5 @@
 ---
+/** The about-page illustration: a laptop, a phone and an ESP32. Kept simple on purpose. */
 interface Props { class?: string }
 const { class: cls = '' } = Astro.props;
 ---
@@ -7,7 +8,7 @@ const { class: cls = '' } = Astro.props;
   class:list={['wob', cls]}
   viewBox="0 0 480 320"
   role="img"
-  aria-label="Sketch of a family of four in front of a house with a radio antenna on the roof, a hockey stick leaning on the wall, and a laptop, phone and ESP32 beside it"
+  aria-label="Sketch of a laptop and a phone showing colorful apps, with an ESP32 board in front"
   fill="none"
   stroke="var(--ink)"
   stroke-width="5"
@@ -15,48 +16,32 @@ const { class: cls = '' } = Astro.props;
   stroke-linejoin="round"
 >
   <!-- ground -->
-  <path d="M8 302 q118 10 236 0 t228 0" stroke-width="5"></path>
+  <path d="M20 296 q110 10 220 0 t220 0" stroke-width="6"></path>
 
-  <!-- house -->
-  <path d="M140 142 v158 h160 v-158" fill="var(--paper)"></path>
-  <path d="M120 160 L220 70 L320 160" fill="var(--paper)"></path>
-  <rect x="205" y="230" width="36" height="70" rx="4"></rect>
-  <rect x="160" y="180" width="36" height="32" rx="4"></rect>
-  <rect x="248" y="180" width="36" height="32" rx="4"></rect>
-  <rect x="254" y="186" width="24" height="20" rx="2" fill="var(--accent)" stroke="none"></rect>
+  <!-- laptop -->
+  <rect x="70" y="60" width="270" height="180" rx="14" fill="var(--paper)"></rect>
+  <path d="M50 250 h310 l-16 26 h-278 z" fill="var(--paper)"></path>
+  <rect x="86" y="76" width="238" height="148" rx="8" fill="#2563eb" stroke="none"></rect>
+  <rect x="102" y="94" width="90" height="12" rx="6" fill="#fff" opacity=".85" stroke="none"></rect>
+  <rect x="102" y="118" width="206" height="46" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="102" y="174" width="96" height="36" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="212" y="174" width="96" height="36" rx="10" fill="#fff" opacity=".35" stroke="none"></rect>
 
-  <!-- antenna on the roof: mast, three elements, signal arcs -->
-  <path d="M265 110 v-62" stroke-width="4"></path>
-  <path d="M250 60 h30 M253 72 h24 M256 84 h18" stroke-width="4"></path>
-  <path d="M277 38 a14 14 0 0 1 0 20 M286 30 a25 25 0 0 1 0 36" stroke="var(--accent)" stroke-width="4"></path>
+  <!-- phone, leaning on the laptop -->
+  <rect x="358" y="118" width="86" height="172" rx="18" fill="var(--paper)"></rect>
+  <rect x="368" y="132" width="66" height="144" rx="10" fill="#0d9488" stroke="none"></rect>
+  <rect x="378" y="148" width="40" height="8" rx="4" fill="#fff" opacity=".85" stroke="none"></rect>
+  <rect x="378" y="166" width="46" height="40" rx="8" fill="#fff" opacity=".35" stroke="none"></rect>
+  <rect x="378" y="214" width="46" height="40" rx="8" fill="#fff" opacity=".35" stroke="none"></rect>
 
-  <!-- sparkle at the left eave -->
-  <path d="M104 122 l12 12 M130 114 v16 M96 150 h16" stroke="var(--accent)" stroke-width="5"></path>
+  <!-- ESP32 on the bench in front -->
+  <rect x="150" y="262" width="110" height="30" rx="5" fill="var(--paper)"></rect>
+  <rect x="162" y="270" width="18" height="14" rx="3" stroke-width="3"></rect>
+  <path d="M190 269 h30 M190 277 h30 M190 285 h30" stroke-width="3"></path>
+  <path d="M232 266 v22 M240 266 v22 M248 266 v22" stroke-width="3"></path>
+  <circle cx="156" cy="268" r="2" fill="var(--ink)" stroke="none"></circle>
 
-  <!-- hockey stick leaning on the wall, blade on the ground -->
-  <path d="M312 176 L346 292" stroke-width="5"></path>
-  <path d="M346 292 q6 10 30 4" stroke-width="7"></path>
-  <path d="M318 194 l6 -2 M321 204 l6 -2 M324 214 l6 -2" stroke-width="3"></path>
-
-  <!-- family: dad, wife, two kids -->
-  <circle cx="34" cy="188" r="12"></circle>
-  <path d="M34 200 v50 M34 214 l-12 14 M34 214 l12 14 M34 250 l-9 50 M34 250 l9 50"></path>
-  <circle cx="66" cy="206" r="11"></circle>
-  <path d="M66 217 v38 M66 230 l-10 12 M66 230 l10 12 M66 255 l-8 45 M66 255 l8 45"></path>
-  <circle cx="94" cy="240" r="9"></circle>
-  <path d="M94 249 v24 M94 257 l-8 8 M94 257 l8 8 M94 273 l-6 27 M94 273 l6 27"></path>
-  <circle cx="116" cy="252" r="8"></circle>
-  <path d="M116 260 v18 M116 266 l-7 7 M116 266 l7 7 M116 278 l-5 22 M116 278 l5 22"></path>
-
-  <!-- a laptop, a phone and an ESP32 beside the house -->
-  <rect x="388" y="236" width="64" height="42" rx="4" fill="var(--paper)"></rect>
-  <rect x="394" y="241" width="52" height="32" rx="2" fill="#2563eb" stroke="none"></rect>
-  <rect x="400" y="246" width="22" height="4" rx="2" fill="#fff" opacity=".85" stroke="none"></rect>
-  <rect x="400" y="254" width="40" height="14" rx="3" fill="#fff" opacity=".35" stroke="none"></rect>
-  <path d="M382 280 h76 l-5 8 h-66 z" fill="var(--paper)"></path>
-  <rect x="458" y="248" width="16" height="42" rx="4" fill="var(--paper)" stroke-width="4"></rect>
-  <rect x="461" y="252" width="10" height="34" rx="2" fill="#0d9488" stroke="none"></rect>
-  <rect x="372" y="290" width="24" height="11" rx="2" fill="var(--paper)" stroke-width="3"></rect>
-  <rect x="375" y="293" width="6" height="5" rx="1" stroke-width="2"></rect>
-  <path d="M385 293 h7 M385 296 h7 M385 299 h7" stroke-width="2"></path>
+  <!-- sparkles -->
+  <path d="M30 40 l16 16 M64 30 v22 M20 76 h22" stroke="var(--accent)" stroke-width="5"></path>
+  <path d="M450 56 l-16 16 M416 46 v22 M460 92 h-22" stroke="var(--accent)" stroke-width="5"></path>
 </svg>
