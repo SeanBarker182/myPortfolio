@@ -30,7 +30,7 @@ export const resume = {
       start: 'Feb 2026',
       end: 'Present',
       bullets: [
-        'Independent studio for software and hardware products: JAM Center, Abrupt, Big Fort Fest, Polaris, and Threadyard.',
+        'Independent studio for software and hardware products: JAM Center, Abrupt, Big Fort Fest, Summit Axis, and Threadyard.',
         'Own the whole thing on each: product, design, mobile and web builds, backend, store submission, and support.',
       ],
     },

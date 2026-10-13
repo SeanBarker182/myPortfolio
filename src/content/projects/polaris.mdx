@@ -1,31 +1,69 @@
 ---
-title: Polaris
-tagline: A real-time CAN bus dashboard that stays beyond 60 fps using Nitro Modules and Skia.
-description: Polaris is a real-time vehicle dashboard built in React Native with Nitro Modules and Skia, rendering live CAN bus telemetry beyond 60 fps.
+title: Summit Axis
+tagline: "An aftermarket digital dash for Polaris UTVs. A small CAN gateway reads the machine, an iPad shows it, beyond 60 fps."
+description: "Summit Axis is an aftermarket digital dashboard for Polaris UTVs: an ESP32 CAN bus gateway streams live engine and drivetrain data over BLE to an iPad app with a backup camera, built with React Native, Nitro Modules and Skia."
 color: "#ea580c"
 status: writeup
 platform: iPad
 device: tablet
 order: 3
-stack: [React Native, Nitro Modules, Skia, Reanimated]
-role: Design, native modules, rendering pipeline. Built on my own.
+year: 2026
+stack: [ESP32, CAN / J1939, BLE, React Native, Nitro Modules, Skia, Reanimated, H.265]
+role: "Everything. Reverse-engineered the bus, wrote the firmware, built the app, specified the board and enclosure. Built on my own."
+timeline: June 2026 to now. Hardware validated on a 2023 Ranger 570 SP.
 links:
   writeup: /blog/beyond-60-fps
-screens: [Tachometer, Speed, Diagnostics]
+screens: [Dashboard, Backup camera, Diagnostics]
 video: lnjeE42ZZV4
 next: big-fort-fest
 ---
 
 ## The problem
 
-Vehicle telemetry arrives faster than the React Native JS thread can redraw. A naive implementation drops frames the moment the engine does anything interesting.
+Polaris will sell you a factory display for the Ranger. It costs nearly $2,000 installed, and it's the only way to see what the machine is actually doing. A base-model Ranger has a handful of idiot lights and a speedometer, while the ECU is quietly broadcasting RPM, throttle, coolant temperature, fuel rate, gear, drive mode, voltage, hours, and odometer onto the CAN bus 900 times a second.
+
+The idea started bigger than this. The first pitch was a generic UTV telemetry module with GPS and trail maps. Stress-testing it killed most of that: trail maps can't compete with onX or Ride Command, gauge displays are a mature category, and the part nobody else wants to do is the hard part. Reverse-engineering the CAN messages for each make, model, and year is the moat.
+
+So the product narrowed to the thing worth building: a passive gateway that plugs into the diagnostic port, decodes the bus, and turns an iPad into the dash. Plus a backup camera, because a Ranger has no rear window.
 
 ## The build
 
-The bus is read in a Nitro Module and handed to the UI thread without serializing through JSON. Gauges are drawn with Skia from Reanimated shared values, so a frame never waits on React.
+### Decoding the bus
 
-The full writeup, with the numbers, is on the blog: [Beyond 60 fps](/blog/beyond-60-fps).
+The gateway is an ESP32 running the TWAI controller in listen-only mode at 250 kbit/s. It never transmits on the vehicle bus, so there is no way for it to confuse the ECU. Most of the traffic follows the J1939 standard, which gave me a head start on engine speed, coolant temperature, fuel, and hours. The rest is proprietary Polaris IDs: 4WD state, diff lock, seatbelt, and a second throttle signal.
 
-## How it went
+Finding those meant field sessions with a laptop in the cab. Rev the engine, shift through gears, buckle and unbuckle the seatbelt, capture the hex, and let Claude Code hunt for the bytes that changed. The seatbelt turned out to be a single bit flip in one byte of PGN `FF6A`. [The blog post](/blog/beyond-60-fps) walks through that process.
 
-[Frame times before and after, on which device, and the one number that mattered.]
+Today the firmware decodes fifteen signals, debounces drive mode so 2WD/4WD doesn't flicker, and reads the DM1 diagnostic lamps so the dash can show a check-engine state.
+
+### The link
+
+Every 25 milliseconds the ESP32 packs the latest values into a 24-byte big-endian frame and sends it as a single BLE notification. On the iPad, a Nitro Module written in Swift owns the CoreBluetooth connection and exposes that frame to JavaScript as a stable `ArrayBuffer`. The JS side reads fields out of a `DataView` that's created once. No JSON, no per-packet object allocation, nothing for the garbage collector to chase at 40 Hz.
+
+### The dash
+
+The app is React Native on Expo, running the new architecture. Gauges are drawn with Skia, driven by Reanimated shared values, so a needle moves without a React render. Speed, RPM, throttle, voltage, temperature, fuel level and rate, drive mode, gear, odometer, hours, and trip all update live. It holds 60 fps on the iPad at full throttle, which was the whole point.
+
+### The camera
+
+The backup camera is a separate feed, not something the ESP32 could carry. It's an off-the-shelf Wi-Fi camera with an undocumented protocol, so I reverse-engineered that too: a TCP handshake with keepalives, then H.265 video over UDP. A second Nitro Module decodes it with VideoToolbox straight into a display layer. The app joins the camera's network automatically, and when the CAN gear signal reads `R`, the camera view overlays the dash with parking guidelines.
+
+### The hardware
+
+The unit in the machine right now is a prototype: an ESP32 devkit with a MrDIY CAN shield stacked on it, an OBD-II to Polaris adapter, and a 3D-printed enclosure with a TPU gasket. It works. It also costs about $75 in parts, mostly for a $40 shield built around a $4 transceiver, and it needs a lot of hand soldering.
+
+I evaluated the modular route (RAKwireless WisBlock) and several open designs before settling on a custom two-layer carrier board. Open boards were rejected for real reasons: one had no license file, another was non-commercial with a 12 V input ceiling and no iPad-compatible radio. The carrier board pairs a socketed Seeed XIAO ESP32-S3 with an SN65HVD230 transceiver, onboard 12 V to 5 V regulation, and automotive input protection: a resettable fuse, reverse-polarity diode, TVS clamps on both power and the CAN lines. One four-conductor cable to the diagnostic port. Target size is 50 by 40 mm so it can be assembled by JLCPCB instead of me.
+
+The schematic and layout were largely AI-generated. I specified the parts and constraints, directed the design, and reviewed the output, and I've been teaching myself to read schematics properly along the way. I was a beginner at that in September.
+
+## Where it stands
+
+- Validated on a 2023 Polaris Ranger 570 SP. Other models are untested.
+- The iPad app and the prototype gateway are in daily use on my machine.
+- The carrier PCB is in layout. Routing and design-rule checks are next.
+- An alpha run of about ten units is planned, with buyers already lined up, sold directly through Polaris and UTV communities at roughly $99.
+- In-app firmware updates are planned, with a factory recovery partition and USB-C reflash as the fallback.
+
+## What it demonstrates
+
+Reverse-engineering a proprietary vehicle bus into usable telemetry. A full stack from embedded firmware to wireless link to a polished app to a physical enclosure. Hardware decisions driven by cost, licensing, and manufacturability rather than "make it work once." And the product judgment to kill the weak half of an idea before building it.
