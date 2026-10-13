@@ -30,9 +30,15 @@ export const nav = [
 /** Whole years since an ISO date, computed at render time. */
 export function yearsSince(iso: string, now = new Date()): number {
   const b = new Date(iso);
-  let a = now.getFullYear() - b.getFullYear();
-  if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) a--;
-  return a;
+  const years = now.getFullYear() - b.getFullYear();
+  if (now.getMonth() === b.getMonth() && now.getDate() === b.getDate()) return years;
+  if (
+    now.getMonth() > b.getMonth() ||
+    (now.getMonth() === b.getMonth() && now.getDate() > b.getDate())
+  ) {
+    return years + 1;
+  }
+  return years;
 }
 
 export function readingTime(body: string | undefined): number {

@@ -21,25 +21,19 @@ const [k1, k2] = site.kids;
     <!-- Hero -->
     <section class="mt-16 flex flex-col items-center gap-12 md:flex-row">
       <div class="flex flex-1 flex-col gap-6 md:basis-[540px]">
-        <div class="flex flex-wrap gap-2.5">
-          <Sticker tilt={-3} class="text-[21px]">senior product engineer</Sticker>
-          <Sticker tilt={2} class="text-[21px]">fort wayne, in</Sticker>
-        </div>
         <h1 class="font-hand text-[64px] leading-[0.92] font-bold sm:text-[96px]">
           Hi, I'm Sean.<br />I build the <span class="hl">whole thing.</span>
         </h1>
         <p class="max-w-[540px] text-[22px] leading-normal">
-          Mobile apps, web, backend, and the AI glue in between. If it needs to exist, I can build it, ship it, and make it feel good.
+          Mobile apps, web, backend, hardware, design, and the AI glue in between. If it needs to exist, I can build it, ship it, and make it feel good.
         </p>
         <div class="flex flex-wrap gap-3.5">
           <a href="#contact" class="btn btn-primary hd">Say hello</a>
           <a href="#work" class="btn hd3">See the work</a>
         </div>
         <div class="mt-1 flex flex-wrap gap-2.5">
-          <Sticker tilt={-2} class="text-xl">dad ×2</Sticker>
-          <Sticker tilt={2} class="text-xl">esp32 + lora</Sticker>
-          <Sticker tilt={-3} class="text-xl">home assistant</Sticker>
-          <Sticker tilt={3} class="text-xl">go hawks</Sticker>
+          <Sticker tilt={-3} class="text-[21px]">senior product engineer</Sticker>
+          <Sticker tilt={2} class="text-[21px]">fort wayne, in</Sticker>
         </div>
       </div>
       <div class="hidden w-[480px] shrink-0 justify-center md:flex">
@@ -50,8 +44,7 @@ const [k1, k2] = site.kids;
     <!-- Selected work -->
     <section id="work" class="reveal flex flex-col gap-8 scroll-mt-8">
       <div class="flex flex-wrap items-baseline gap-4">
-        <h2 class="font-hand text-6xl leading-none font-bold">Things I shipped</h2>
-        <span class="text-lg opacity-75">Product through store submission. The color is the work.</span>
+        <h2 class="font-hand text-6xl leading-none font-bold">Things I've shipped</h2>
       </div>
       <div class="grid grid-cols-1 gap-7 md:grid-cols-2">
         {projects.map((p, i) => <ProjectCard project={p} index={i} />)}
@@ -80,9 +73,8 @@ const [k1, k2] = site.kids;
           Staff Software Engineer at {site.employer} by day. The rest of the time I'm a dad to a
           <span data-born={k1.born}>{yearsSince(k1.born)}</span>-year-old and a
           <span data-born={k2.born}>{yearsSince(k2.born)}</span>-year-old, flashing ESP32s, wiring the house into Home Assistant, and
-          building things for people around Fort Wayne because someone said it couldn't be done.
+          building things for people around Fort Wayne because everyone should have access to cool tools.
         </p>
-        <p class="text-lg leading-relaxed">I also use AI to wildly over-engineer small personal problems. My budget has a phone number.</p>
         <a href="/about" class="text-[17px] font-bold text-link">More about me →</a>
       </div>
     </section>

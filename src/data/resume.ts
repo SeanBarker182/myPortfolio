@@ -19,7 +19,7 @@ export const resume = {
       end: 'Present',
       bullets: [
         'Help clients build and scale production React Native and Expo apps at one of the best-known React Native consultancies.',
-        '[One line on a client engagement or internal initiative you led.]',
+        'Contributor to many open source products such as Ignite & Reactotron',
       ],
     },
     {
@@ -42,9 +42,9 @@ export const resume = {
       start: 'Feb 2021',
       end: 'Jul 2025',
       bullets: [
-        'Built and shipped client web and mobile products with React, React Native, Next.js, NestJS, Node, and GraphQL.',
-        'Led the agency\'s early LLM work: chat assistants, AI-backed features, and the research that made them production-ready.',
-        'Mentored teammates on React and React Native; endorsed by the team for TypeScript, React Native, Node, GraphQL, and NestJS.',
+        'Built and shipped client web and mobile products with React, React Native, Laravel, Next.js, NestJS, Node, and GraphQL.',
+        'Helped lead the agency\'s early LLM work: chat assistants, AI-backed features, and the research that made them production-ready.',
+        'Mentored teammates on React and React Native.',
       ],
     },
     {
