@@ -1,9 +1,287 @@
 ---
-title: Getting your app ready for the iPhone Duo
-description: Two screens, one app. What breaks, what to test, and what to ship before launch day.
+title: "Apple didn't invent the foldable. It might make you support one."
+description: What the iPhone Duo changes for iOS and React Native apps, what breaks, and what to test first.
 pubDate: 2026-10-20
-tags: [ios, launch prep, react native]
+tags: [ios, react native, launch prep, swift]
 draft: true
 ---
 
-[Draft. The queued post gets pasted here.]
+![An iPhone Duo, open, next to a closed one](/blog/iphone-duo-ready/hero.png)
+
+Us Apple nerds are back, baby! For a few glorious hours after the September 9th keynote, the iPhone Duo was the first foldable phone ever made.
+
+Then we opened Twitter to a wall of reminders. Samsung shipped a Galaxy Fold in 2019, Motorola brought back the folding Razr, and Google is several generations into the Pixel Fold. None of that mattered. Apple had spoken, and we were ready to pretend the last seven years of foldables were an extended beta.
+
+It's a special kind of delusion, and I have it. It's also not entirely irrational. Analysts expect Apple to ship [around six million Duos this year](https://9to5mac.com/2026/09/15/iphone-duo-could-be-very-hard-to-get-at-launch-per-report/), [roughly a quarter of the global foldable market](https://www.trendforce.com/presscenter/news/20260910-13228.html). That's despite a late October launch and a hinge supply that can't keep up with demand.
+
+Apple didn't invent the foldable. It did make the form factor much harder for developers to ignore.
+
+## Three levels of support
+
+The good news is that your existing app will probably run on iPhone Duo. Whether it feels at home there is another question. [Apple has made sure Duo isn't a compatibility nightmare on day one](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo):
+
+- Apps built before iOS 27 run in a conservative compatibility layout.
+- Apps built on the iOS 27 SDK can use more of the inner display.
+- Apps built on iOS 27.1 get full edge-to-edge presentation, the new Duo APIs, and system bars that can move to a vertical edge.
+
+That's generous to users and slightly dangerous for developers. Your app is likely going to launch and will probably remain crash-free and perfectly usable. Meanwhile, your user who just spent $1,999 watches your interface float awkwardly in a display it barely acknowledges.
+
+## Stop asking what device this is
+
+It's tempting to treat Duo as its own, slightly unusual piece of hardware: an iPhone with a front screen that folds open to one that's closer to the size of an iPad Mini. That might lead you to write code like this:
+
+```swift
+if deviceIsDuo && hingeAngle < 90 {
+  // Do the weird folding-phone layout
+}
+```
+
+The problem is that this is exactly the path Apple is steering you away from. Its guidance is more boring: [treat Duo as an iPhone whose available space can change](https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo). The width can change, system chrome can switch axes, a camera can become an obstruction, and a fold can divide the screen, all while the same scene stays alive.
+
+None of this is new. Apple has been pushing developers in this direction for years with things like iPad multitasking, Stage Manager, and Mac apps. The problem is that these concerns have been an easy one to avoid in the past. A lot of us were not building for these platforms or found something like iPad multitasking to be too small of an edge case to prioritize it. That's going to become much harder to do with the Duo.
+
+Instead, react to the space you actually have:
+
+- The current container size
+- Horizontal and vertical size classes
+- Safe areas and layout margins on all four edges
+- Geometry from the current scene or view hierarchy
+- System containers that adapt navigation and presentations for you
+
+That includes quiet global assumptions like this one:
+
+```swift
+let scale = UIScreen.main.scale
+```
+
+On a device with multiple displays, "main" isn't necessarily the screen your view is on. Ask locally instead:
+
+```swift
+// Local to the current view hierarchy.
+let scale = traitCollection.displayScale
+
+// When a screen object is genuinely required.
+let screen = view.window?.windowScene?.screen
+```
+
+Layout works the same way. Don't ask whether the phone is open; ask whether the container has room. In SwiftUI, that can be as ordinary as switching navigation on size class:
+
+```swift
+struct LibraryView: View {
+  @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+  var body: some View {
+    if horizontalSizeClass == .regular {
+      NavigationSplitView {
+        CategoryList()
+      } detail: {
+        BookDetail()
+      }
+    } else {
+      NavigationStack {
+        CategoryList()
+      }
+    }
+  }
+}
+```
+
+The outer display gets a complete compact experience, and the inner display gains a sidebar and detail pane. iPads and future resizable environments get the same benefit for free. That's the core of Apple's design advice: use extra room to show more, not to make everything bigger. For example, a shopping app can add persistent filters, a messaging app can show conversations beside the thread, and a creative tool can reveal an inspector.
+
+## The bars have gone sideways
+
+On Duo, navigation, toolbar, tab, status, and overflow controls can [share a vertical region](https://developer.apple.com/videos/play/tech-talks/111462/) along the side of the display. That preserves vertical room for content and keeps controls near the edge of the device.
+
+The key here is to make sure you're using platform primitives. If you use `NavigationStack`, `NavigationSplitView`, `TabView`, `UINavigationController`, `UISplitViewController`, or `UITabBarController`, the system can move bars between axes, avoid reserved regions, collapse split views, and push lower-priority actions into overflow. If you drew a rectangle at the bottom of the screen and called it a tab bar, iOS sees a rectangle.
+
+![System bars moved to the vertical edge of the inner display](/blog/iphone-duo-ready/vertical-bars.png)
+
+If you're on Expo Router, this is a good reason to move to native tabs. [`expo-router/native-tabs`](https://docs.expo.dev/router/advanced/native-tabs/) renders an actual `UITabBarController` on iOS, so it inherits the vertical bar, overflow, and reserved-region behavior described above. The default `Tabs` layout draws in JavaScript and inherits none of it.
+
+New APIs let you control how bar content behaves:
+
+- Whether an item can move into a vertical bar
+- Which actions stay visible longest as space shrinks
+- Which actions always belong in overflow
+- Whether toolbar actions or destination tabs win when both can't fit
+- Whether a specific screen keeps its bars horizontal
+
+The design work matters as much as the API work. Apple recommends giving adaptable items both a symbol and a title. The symbol carries recognition in the narrow vertical bar, and the title provides clarity in overflow, search, and accessibility. Text-only controls eat vertical space, and custom toolbar views don't automatically become good vertical controls. An app with six equally "important" actions hasn't decided what's important.
+
+## Safe areas, and the fold in the middle
+
+Duo's insets can be asymmetric. The outer camera and side-mounted system controls may consume one edge without a matching inset on the other, which makes this math fragile:
+
+```swift
+let usableWidth = view.bounds.width - view.safeAreaInsets.left * 2
+```
+
+Inset each edge independently:
+
+```swift
+let usableBounds = view.bounds.inset(by: view.safeAreaInsets)
+```
+
+![Asymmetric safe areas on the Duo's inner display](/blog/iphone-duo-ready/safe-areas.png)
+
+A fold is different. When the phone is partially open, it can divide the middle of a view. Apple calls geometry occupied by hardware or system UI a [reserved region](https://developer.apple.com/documentation/swiftui/reservedregion), and there are two kinds:
+
+- A **division** region splits usable content, such as an active fold.
+- An **occlusion** region covers part of it, such as a camera.
+
+Custom interfaces can query both from the view's own coordinate space:
+
+```swift
+GeometryReader { proxy in
+  let folds = proxy.reservedRegions(kind: .division)
+  let cameras = proxy.reservedRegions(kind: .occlusion)
+
+  CustomCanvas(
+    folds: folds,
+    cameras: cameras
+  )
+}
+```
+
+UIKit exposes the same information through [`UIView.reservedRegions`](https://developer.apple.com/documentation/uikit/uiview/reservedregion).
+
+![Division and occlusion reserved regions on a partially folded Duo](/blog/iphone-duo-ready/reserved-regions.png)
+
+Once you can find the fold, resist rearranging everything around it. Move only what's in the way: a button under the hinge, or a group of related controls together. Scrolling content like a feed or article can usually stay put.
+
+## ArrangementView: describe the relationship, not the geometry
+
+For two closely related pieces of content, iOS 27.1 introduces a new [`ArrangementView`](https://developer.apple.com/documentation/swiftui/arrangementview) in SwiftUI and [`UIArrangementViewController`](https://developer.apple.com/documentation/uikit/uiarrangementviewcontroller) in UIKit. You describe a primary and a secondary view, and the system decides placement based on size, aspect ratio, size class, and hardware divisions.
+
+The split style keeps both views visible:
+
+```swift
+NavigationStack {
+  ArrangementView {
+    PlayerView()
+  } secondary: {
+    UpNextView()
+  }
+  .arrangementViewStyle(.split.axes(.horizontal))
+}
+```
+
+The overlay style fits a foreground/background relationship when the phone is flat, and lets the system separate the views across the fold when it's partially open.
+
+![Split and overlay arrangement styles across the fold](/blog/iphone-duo-ready/arrangement-view.png)
+
+A quick rule of thumb:
+
+- Two meaningful peers in an `HStack` or `VStack`: split arrangement
+- A clear foreground/background `ZStack`: overlay arrangement
+- A relationship that's really navigation: keep your navigation container
+- A feed with dozens of items: probably not this tool
+
+This is my favorite part of Apple's approach. Instead of every developer reproducing fold geometry, we describe how the views relate, and the system handles the hardware.
+
+## So, what does this mean for React Native?
+
+React Native starts in a better position than you might assume. Yoga already thinks in constraints, not iPhone models, so Flexbox layouts with sensible min/max widths and relative sizing will likely adapt surprisingly well. [`useWindowDimensions()`](https://reactnative.dev/docs/usewindowdimensions) updates as the window changes, so the compact-versus-expanded decision looks familiar:
+
+```tsx
+import { useWindowDimensions, View } from "react-native";
+
+export function LibraryScreen() {
+  const { width } = useWindowDimensions();
+  const showDetailPane = width >= 700;
+  return (
+    <View style={styles.container}>
+      <BookList style={styles.list} />
+      {showDetailPane ? <BookDetail style={styles.detail} /> : null}
+    </View>
+  );
+}
+```
+
+There's nothing Duo-specific about 700. It's the width at which this interface has room for both panes, and that holds whether the app occupies half the inner display, rotates, or runs on an iPad.
+
+Geometry is a bit more nuanced. Safe-area libraries cover ordinary edge insets, but a fold through the middle of a canvas isn't an edge inset. React Native also doesn't currently expose reserved regions, arrangements, vertical bars, or hinge state as cross-platform primitives. The work falls into three areas.
+
+### Adaptive content lives in JavaScript
+
+Use `useWindowDimensions`, `onLayout`, Flexbox, and content-driven breakpoints. Preserve state as the container resizes, and test compact and expanded presentations without checking the hardware model. Most screens belong here.
+
+### Navigation determines what you inherit
+
+A JavaScript-rendered header or tab bar won't become an iOS 27.1 vertical system bar. Whether a navigation library inherits Duo behavior depends on which native containers and bar-item APIs it uses underneath. Libraries built on native primitives can adopt these behaviors centrally. Fully custom navigation will need to reproduce the axis, safe-area, priority, and overflow behavior itself, so you probably don't need to rewrite your navigation. You do need to test the implementation you have, because "native-looking" and "native-owned" are different things.
+
+### Custom surfaces may need a small native escape hatch
+
+Map overlays, drawing canvases, camera views, game HUDs, and floating controls may need exact reserved-region geometry. UIKit reports this geometry through `UIView.reservedRegions`, in the view's own coordinate space, so the clean bridge is a native component close to the affected surface, not a global `isDuo` module.
+
+That's what I like about React Native's escape hatch: you bridge the smallest fact the interface needs, rather than the entire Duo SDK.
+
+## Getting the Duo simulator running
+
+You need [Xcode 27.1](https://developer.apple.com/news/releases/), which shipped the iOS 27.1 SDK and the Duo simulator. Installing Xcode may not be enough on its own. A few of my colleagues have had to open Settings, then Components, and click Update next to iOS 27.1 before the runtime appears. Once it's there, iPhone Duo shows up as an ordinary build destination.
+
+The simulator window has fold and unfold buttons in the bottom toolbar. Holding Option while clicking them reveals a slider for setting the hinge angle precisely, which is what you want for testing partially open poses rather than just the two endpoints.
+
+One gap worth knowing about: there's no `simctl` or `devicectl` command for the hinge angle, so poses can't be scripted in CI yet. If you need it locally, [artemnovichkov/hinge](https://github.com/artemnovichkov/hinge) wraps the private interface in a CLI (`hinge 120`, `hinge sweep 180 0 2`).
+
+## If you're on Expo
+
+Apps built against the iOS 27 SDK must use the UIKit scene-based lifecycle, or they won't launch on iOS 27 at all. Expo generated an AppDelegate/window lifecycle through SDK 57, so a stock SDK 57 app built with Xcode 27 dies at launch with `UIScene life cycle is required for apps built with this SDK`.
+
+Here's a couple ways to get around this:
+
+**Upgrade to SDK 58.** SDK 58 [has been in beta](https://expo.dev/changelog/sdk-58-beta) since 9/15, and is built for iOS 27. It ships React Native 0.88 RC. If you customize `AppDelegate.swift`, read Expo's [scene lifecycle migration guide](https://expo.fyi/ios-scene-lifecycle) first, since app delegate callbacks are delivered differently now.
+
+**Staying on SDK 57.** This works if you're on `expo@57.0.23` or newer plus the latest [`expo-build-properties`](https://docs.expo.dev/versions/latest/sdk/build-properties/):
+
+```json
+{
+  "expo": {
+    "plugins": [
+      ["expo-build-properties", { "ios": { "enableSceneSupport": true } }]
+    ]
+  }
+}
+```
+
+Then `npx expo prebuild --clean`. The plugin only edits the template AppDelegate. If yours has diverged, or `Info.plist` already declares a scene manifest, it refuses to overwrite and you'll need to migrate by hand. It's a no-op on SDK 58, so remove it when you upgrade.
+
+If you hit build errors from React Native's prebuilt XCFrameworks under Xcode 27, [`ios.buildReactNativeFromSource: true`](https://docs.expo.dev/versions/latest/sdk/build-properties/) in the same plugin falls back to compiling RN from source. Your initial builds will be much slower, but it should work as a temporary escape hatch.
+
+## What I would test first
+
+Before building a tabletop mode or making a guitar bend notes, run your existing app in the Duo simulator and look for boring failures. Those are usually the expensive ones.
+
+1. **Resize every primary screen.** Look for fixed widths, clipped content, misplaced absolute positioning, and layouts that only work at the two endpoint sizes.
+2. **Open and close the device mid-task.** Navigation state, selection, scroll position, keyboard focus, and unsaved input should survive.
+3. **Audit navigation and toolbars.** Check vertical presentation, long titles, text-only actions, competing tabs and toolbar items, and overflow.
+4. **Inspect all four safe-area edges independently.** Watch outer-display landscape layouts and anything centered with hand-written math.
+5. **Find custom overlays.** Floating buttons, media controls, maps, onboarding callouts, bottom sheets, canvases, and HUDs are the likeliest to collide with a fold or camera.
+6. **Test partially folded poses.** The transitions and awkward in-between geometry are where hidden assumptions show up.
+7. **Test Split View and the keyboard together.** A large display becomes a small window once another app and the keyboard take their share.
+8. **Repeat with Dynamic Type and a right-to-left language.** A toolbar that barely fits in English at default size is already broken; Duo just gives it a more interesting place to fail.
+
+For an existing app, work in roughly that order: make it resizable, adopt the current SDK, let system components do their jobs, fix custom surfaces, and save the Duo-specific delight for last.
+
+## What good support looks like
+
+Duo will produce plenty of gimmicks, and some will be great. We'll get books with bending pages, hinge-controlled games, camera apps spanning both displays, and at least one calculator that looks insanely good folded to exactly 104 degrees.
+
+The important work is less tweetable: letting navigation move without breaking, preserving state as the scene changes shape, and showing more when space appears. None of it is exclusive to Duo. It improves iPad multitasking, iPhone Mirroring, Mac windows, accessibility, external displays, and whatever strange piece of glass Apple ships next.
+
+Apple didn't invent the foldable, or responsive layout. But as it has so many times before, it may put an existing idea into enough hands that treating it as an edge case stops being an option.
+
+And, like the completely predictable Apple person I am, I should probably start getting my apps ready.
+
+## Sources and useful references
+
+- [Apple: Preparing your app for iPhone Duo](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo)
+- [Apple HIG: Designing for iPhone Duo](https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo)
+- [Apple: Get ready for iPhone Duo](https://developer.apple.com/iphone-duo/)
+- [Apple Tech Talk: Prepare your app for iPhone Duo](https://developer.apple.com/videos/play/tech-talks/111461/)
+- [Apple Tech Talk: Raise the bar with iPhone Duo](https://developer.apple.com/videos/play/tech-talks/111462/)
+- [Apple Tech Talk: Strike a pose with adaptive layouts](https://developer.apple.com/videos/play/tech-talks/111463/)
+- [React Native: useWindowDimensions](https://reactnative.dev/docs/usewindowdimensions)
+- [Expo: iOS scene lifecycle migration guide](https://expo.fyi/ios-scene-lifecycle)
+- [Expo: SDK 58 beta release notes](https://expo.dev/changelog/sdk-58-beta)
+- [Expo: expo-build-properties documentation](https://docs.expo.dev/versions/latest/sdk/build-properties/)

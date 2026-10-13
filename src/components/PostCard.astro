@@ -10,7 +10,7 @@ interface Props {
 const { post, index = 0 } = Astro.props;
 const d = post.data;
 const borders = ['hd2', 'hd3', 'hd'];
-const date = d.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const date = d.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const meta = d.canonicalLabel ? `${d.canonicalLabel} · ${readingTime(post.body)} min read` : `${date} · ${readingTime(post.body)} min read`;
 ---
 

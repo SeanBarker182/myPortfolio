@@ -12,6 +12,11 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [react(), mdx(), sitemap()],
   compressHTML: true,
+  markdown: {
+    shikiConfig: {
+      themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

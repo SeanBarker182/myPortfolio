@@ -1,35 +1,339 @@
 ---
-title: "Beyond 60 fps: building a real-time CAN bus dashboard with Nitro Modules and Skia"
-description: What it takes to render live vehicle telemetry in React Native without dropping frames.
-pubDate: 2025-06-01
-tags: [react native, performance, skia]
+title: "Beyond 60 FPS: Building a Real-Time CAN Bus Dashboard with Nitro Modules and Skia"
+description: Streaming 900 CAN bus updates a second from a Polaris Ranger to an iPad, and drawing them in React Native without dropping a frame.
+pubDate: 2026-05-08
+tags: [react native, performance, skia, esp32]
 canonical: https://shift.infinite.red/beyond-60-fps-building-a-real-time-can-bus-dashboard-with-nitro-modules-and-skia-d0f564f8d239
 canonicalLabel: Infinite Red's blog
 youtube: lnjeE42ZZV4
 ---
 
-[Lede. Two sentences on why a vehicle dashboard is a hard rendering problem and what "beyond 60 fps" actually means here. The full text of the Medium post gets ported here with the canonical link kept.]
+A couple years ago I moved to one of those small Indiana towns where the streets are filled with golf carts and UTVs. Naturally, my jealousy of seeing all the other dads hauling their families in glorious, 600lb open air vehicles got the best of me, so I broke down and bought a Polaris Ranger.
 
-## The constraint
+![A Polaris Ranger parked in front of a garage](/blog/beyond-60-fps/polaris-ranger.jpg)
 
-[CAN bus frames arrive at a rate the JS thread can't keep up with. What the naive React Native version did, and where it fell over.]
+Being the tinkerer that I am, I decided to shave a few bucks off the price by buying a base model and upgrading it over time. One thing I knew I wanted was a nice command center. Something where I could control my music, see real-time vehicle data, and display a backup camera. However, after discovering that the Polaris display would cost me nearly $2,000 to install, I quickly found that I was going to need some creativity to accomplish this.
 
-## Reading the bus with a Nitro Module
+This was the perfect excuse.
+
+One of the biggest drivers for my obsession with React Native is its "escape hatch": the ability to write performant native code when you need it, while still getting the luxury of writing simple React code when you don't. Recently, I've been itching to scratch a very specific technical itch: sharing ArrayBuffers over JSI.
+
+My goal was to see just how fast I could stream raw binary data into a React Native app without the tax of serialization. But to test that, I needed a high-frequency / low-latency data source to ingest.
+
+So, I did what any other engineer would have done: found a minor problem in my life and turned it into a project that would eat up all my free time for the foreseeable future.
+
+## The Bottleneck: The Serialization Tax
+
+Developers often think of a native module as a post office: native code "sends" data, and JavaScript "receives" a JS object. That metaphor is outdated for the new architecture, because JSI removes the old asynchronous serialized bridge and lets JavaScript hold references to native/C++ objects directly.
+
+But when a native module returns ordinary JS data, there is still a packaging cost. Even without the old bridge serialization step, the runtime still has to:
+
+- **Materialize JS values:** Every primitive, like an RPM number or a Boolean seatbelt state, has to be represented as a value the JS engine understands.
+- **Allocate JS objects:** If you're returning a sensor object like `{ rpm: 3000, temp: 190 }`, a new chunk of memory is reserved in the JS heap for that object.
+- **Manage Visibility:** The engine has to register these new objects with the garbage collector so it knows when to throw them away later.
+
+In practice, this code often looks completely reasonable:
 
 ```ts
-interface CanBus extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
-  start(bitrate: number): void
-  onFrame(cb: (id: number, data: ArrayBuffer) => void): void
-  stop(): void
+// Looks clean, but hides a high-frequency tax
+const telemetry = NativeTelemetry.getSnapshot();
+
+updateDashboard({
+  rpm: telemetry.rpm,
+  speed: telemetry.speed,
+  temp: telemetry.temp,
+  gear: telemetry.gear,
+});
+```
+
+If you're sending the weather once a minute, that code is reasonable. But when you need to send several values at 60 updates a second, the volume adds up. At 60Hz, you're asking the JS thread to create, track, and later garbage-collect a steady stream of short lived objects.
+
+This can become a silent killer of 60 FPS. The UI may look smooth for a few seconds, then hiccup when the JavaScript thread has too much work to do or when Hermes has to catch up on garbage collection. In a vehicle moving at speed, those hiccups are the difference between a tool that feels like it's part of the machine and one that feels like a toy.
+
+The better way to design this for high-frequency data is to keep it in native and expose the smallest possible JS surface:
+
+```ts
+// Better: reuse a compact native-owned buffer instead of
+// returning a fresh JS object every frame.
+const buffer = NativeTelemetry.getTelemetryBuffer();
+const view = new DataView(buffer);
+
+function readTelemetry() {
+  return {
+    rpm: view.getUint16(0),
+    speed: view.getUint16(1),
+    gear: view.getUint8(2),
+  };
 }
 ```
 
-## Drawing gauges with Skia
+In this version, JavaScript is not receiving a fresh `{ rpm, speed, gear }` object every frame. It reads the few fields it needs out of an ArrayBuffer with a layout that's known by the native side and the JS side.
 
-[How the gauges are drawn on the UI thread with Reanimated shared values feeding Skia, so a frame never waits on React.]
+## The Origin: From "Theoretical" to "Tactical"
 
-> **Rule of thumb:** if a value changes more than a few times a second, it never becomes React state.
+This project started because I wanted a digital cockpit that felt like it came straight from the factory, not a laggy, brand-less aftermarket head unit that I found on sale.
 
-## What it measured
+The concept was simple but daunting:
 
-[Frame times before and after, on which device, and the one number that mattered to the people riding in the vehicle.]
+**Tap into the vehicle's CAN bus.** The "Controller Area Network" is the vehicle's nervous system. It's a specialized internal network that allows the engine, transmission, and sensors to talk to each other. In a modern UTV, the computer is constantly "screaming" telemetry data. Everything from engine RPM and gear position to oil temperature and seatbelt status. In my setup, the CAN bus was sending data at a staggering 900 updates per second.
+
+**Stream that data to an iPad.** Using an ESP32 as a passive CAN listener, or "sniffer," I needed to decode the vehicle's hexadecimal chatter, pack the values I cared about into a compact binary format, and ship them over BLE to the dashboard.
+
+**Render it without dropping a single frame.** Updates needed to be shown in real-time. If I had laggy needles, or delayed numbers, it wouldn't have felt like an instrument cluster I could trust. It would feel like a toy pretending to be one.
+
+## The Hardware: ESP32 as the "Translator"
+
+![An ESP32 wired to a CAN transceiver shield](/blog/beyond-60-fps/esp32-can-shield.jpg)
+
+The first hurdle was getting data off the machine. To do this, I needed a way to bridge the gap between the physical wires of the vehicle's diagnostic port to a wireless signal my iPad could understand. For this part, I reached for an ESP32, a tiny $5 microcontroller that has become a staple of the DIY world. It's low-power, has built-in Bluetooth/Wi-Fi, and is surprisingly fast.
+
+I paired the ESP32 with a CAN transceiver/shield, which converts the vehicle's differential CAN signals into something the ESP32's CAN controller can read.
+
+In this setup, the ESP32 acts as a 'sniffer,' eavesdropping on the hexadecimal messages coming from the vehicle. Much of this chatter follows the J1939 spec, a standardized protocol that's typically used for heavy machinery. Thanks to some incredible OSS projects, I had a head start on where to look for basic telemetry like engine speed.
+
+However, the standard only got me so far. A lot of the data I wanted was tucked away in proprietary IDs, buried in a stream of 900 updates per second. Reverse engineering that by hand would be a special kind of masochism. So instead, I used Claude Code as my pattern spotter.
+
+I streamed raw hex logs to my Mac while doing field tests: revving the throttle, shifting through gears, and repeatedly buckling and unbuckling the seatbelt. Then I fed those logs into Claude and had it look for patterns.
+
+It didn't magically "understand" the vehicle. But it was very good at narrowing the surface area of where I should search. What could have been weeks of staring at hex dumps turned into a few focused garage sessions: perform an action, capture the logs, identify the candidate bytes, then verify the pattern on the machine.
+
+Here is a simple example from the seatbelt test:
+
+```text
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 8F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 8F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 8F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 8F FF FF FF FF FF FF
+SNIFF 0xFF6A: FF 9F FF FF FF FF FF FF
+```
+
+If you look closely, you'll notice a single bit flip from `9F` to `8F`:
+
+- `0x9F = 10011111`, unbuckled
+- `0x8F = 10001111`, buckled
+
+Once the important signals were decoded, the hardware's job became simple: filter the CAN traffic, extract the values that the dashboard cared about, pack them into a compact binary payload, and beam that payload to the iPad over Bluetooth.
+
+## The Bridge: Powering up with Nitro Modules
+
+Now that the data was in the air, the challenge moved to the app; how do I get these raw bytes into the JavaScript memory space without a massive performance hit?
+
+I didn't want to spend my weekend writing manual JSI boilerplate or fighting with C++ glue code. So, I reached for one of our favorite ways to write native modules at Infinite Red: Nitro Modules.
+
+If you're unfamiliar with Nitro Modules, I'd encourage you to check out some of our live streams and podcasts where we talk to the creator of Nitro Modules, Marc Rousavy. Here's a couple episodes to get you started:
+
+- [RNR 351: Transforming Packages to Nitro with Marc Rousavy](https://infinite.red/react-native-radio/rnr-351-transforming-packages-to-nitro-with-marc-rousavy)
+- [Native-Speed Apps with Nitro Modules](https://www.youtube.com/watch?v=lYdGcsbRniY)
+
+Using Nitro for this part was a no-brainer. The CAN bridge needs to ingest raw byte frames at high-frequency, reduce them to the latest dashboard values, and make those bytes readable from JavaScript without allocating a fresh JS object for every packet or frame. Nitro treats ArrayBuffers as a first-class type. You declare it in a TypeScript spec, and Nitrogen generates the native bindings on both sides.
+
+A spec is just a `.nitro.ts` file with an interface extending `HybridObject`. The type parameter picks the native implementation language per platform, and the generated module is instantiated from JS with `NitroModules.createHybridObject<T>("Name")`.
+
+For the dashboard, the win is the buffer itself. Instead of returning a freshly allocated object every frame:
+
+```ts
+{
+  rpm: 3000,
+  speed: 42,
+  temp: 190,
+  gear: 3,
+  seatbelt: true
+}
+```
+
+I expose a stable binary buffer:
+
+```ts
+// Telemetry.nitro.ts
+import { type HybridObject } from "react-native-nitro-modules";
+
+export interface Telemetry extends HybridObject<{ ios: "swift" }> {
+  getTelemetryBuffer(): ArrayBuffer;
+}
+```
+
+That API is tiny, but it changes the shape of the whole system. JavaScript is no longer asking native code to build a fresh object every frame. Instead, it asks for a binary buffer once, then reads specific fields out of that buffer.
+
+```ts
+import { NitroModules } from "react-native-nitro-modules";
+import type { Telemetry } from "./specs/Telemetry.nitro";
+
+const telemetry = NitroModules.createHybridObject<Telemetry>("Telemetry");
+
+const buffer = telemetry.getTelemetryBuffer();
+const view = new DataView(buffer);
+
+// Byte layout agreed on by native and JS:
+//
+// bytes 0-1: rpm, UInt16, big-endian
+// bytes 2-3: speed, UInt16, big-endian
+// bytes 4-5: oil temp, UInt16, big-endian
+// byte 6: gear, UInt8
+// byte 7: flags, UInt8
+//
+// flags bit 0: seatbelt buckled
+
+const RPM_OFFSET = 0;
+const SPEED_OFFSET = 2;
+const TEMP_OFFSET = 4;
+const GEAR_OFFSET = 6;
+const FLAGS_OFFSET = 7;
+
+const FLAG_SEATBELT = 1 << 0;
+
+function readUInt16BE(offset: number) {
+  return view.getUint16(offset, false);
+}
+
+function readDashboardValues() {
+  const rpm = readUInt16BE(RPM_OFFSET);
+  const speed = readUInt16BE(SPEED_OFFSET);
+  const oilTemp = readUInt16BE(TEMP_OFFSET);
+  const gear = view.getUint8(GEAR_OFFSET);
+
+  const flags = view.getUint8(FLAGS_OFFSET);
+  const seatbeltBuckled = (flags & FLAG_SEATBELT) !== 0;
+
+  // Use the values directly for rendering/animation.
+  // Avoid turning this back into a fresh object every frame.
+}
+```
+
+The key detail in this is that the `DataView` is created once. The hot path is a handful of indexed reads against memory that the native side owns.
+
+On the native side, the shape is just as simple. It allocates one buffer and updates its bytes as BLE packets arrive.
+
+```swift
+final class HybridTelemetry: HybridTelemetrySpec {
+  // initializeToZero ensures JS reads sane values before the first BLE packet.
+  private let buffer = ArrayBuffer.allocate(size: 8, initializeToZero: true)
+
+  func getTelemetryBuffer() -> ArrayBuffer {
+    return buffer
+  }
+
+  func handleBlePacket(_ packet: Data) {
+    // buffer.data is an UnsafeMutablePointer<UInt8> — write rpm/speed/temp/
+    // gear/flags into it directly. No allocation, no bridging.
+  }
+}
+```
+
+The win here is that JavaScript sees the data in the cheapest useful shape. It's a stable binary layout instead of a parade of short-lived objects.
+
+Conceptually, this was the bridge I needed: the ESP32 translated vehicle telemetry into compact bytes, BLE delivered those bytes to the app, and Nitro exposed the latest values to JavaScript without forcing every update through object allocation hell.
+
+## The Paint: Real-Time UI with React Native Skia
+
+![The dashboard gauges animating on an iPad](/blog/beyond-60-fps/dashboard.gif)
+
+All the work spent optimizing data reads would have been wasted if the UI couldn't keep up. If I had relied on standard React state and high-frequency re-renders, the JS thread would have choked before the engine even warmed up. To keep the frames from dropping I decided to bypass the React render cycle entirely and talk directly to the GPU.
+
+React Native Skia can use Reanimated shared and derived values directly as component props. There is no React re-render required just to move a needle.
+
+The pattern looks like this:
+
+```ts
+import { useMemo } from "react";
+import {
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+
+const RPM_OFFSET = 0;
+const NEEDLE_SMOOTHING_MS = 80;
+
+function useTelemetryValues(buffer: ArrayBuffer) {
+  // Created once. The hot path reuses this view.
+  const view = useMemo(() => new DataView(buffer), [buffer]);
+
+  // One Shared Value per rendered signal.
+  const rpmSV = useSharedValue(0);
+
+  function onTelemetryTick() {
+    // Coalesced dashboard sample, not every raw CAN frame.
+    // Native has already ingested the bus traffic and updated the buffer.
+    const rpm = view.getUint16(RPM_OFFSET);
+
+    // Smooth analog signals like needles.
+    rpmSV.value = withTiming(rpm, { duration: NEEDLE_SMOOTHING_MS });
+  }
+
+  return { rpmSV, onTelemetryTick };
+}
+```
+
+The gauge then reads from the Shared Value:
+
+```tsx
+import { useMemo } from "react";
+import { Canvas, Path, Skia } from "@shopify/react-native-skia";
+import {
+  type SharedValue,
+  useDerivedValue,
+} from "react-native-reanimated";
+
+const RPM_MAX = 9000;
+
+function Tachometer({ rpmSV }: { rpmSV: SharedValue<number> }) {
+  // Stable arc geometry — built once, never rebuilt.
+  const arcPath = useMemo(() => {
+    return Skia.PathBuilder.Make()
+      .addArc(Skia.XYWHRect(0, 0, 300, 300), 135, 270)
+      .build();
+  }, []);
+
+  const progress = useDerivedValue(() => {
+    return Math.max(0, Math.min(rpmSV.value / RPM_MAX, 1));
+  });
+
+  return (
+    <Canvas style={{ width: 300, height: 300 }}>
+      <Path
+        path={arcPath}
+        style="stroke"
+        strokeWidth={12}
+        start={0}
+        end={progress}
+      />
+    </Canvas>
+  );
+}
+```
+
+Changing `rpmSV.value` does not cause `Tachometer` to re-render in the normal React sense. Reanimated keeps the value reactive across threads, and Skia can consume that value directly as a drawing prop.
+
+Skia then uses the derived value as the end trim of the path. The path itself is stable because only the trim value is changing. That makes this pattern a clean fit for gauges, arcs, progress rings, and needles.
+
+This architecture proved to be exactly what I was looking for. The native code handles the noisy telemetry stream, JavaScript samples just the data that it needs with zero-copy, Reanimated stores the small set of values the UI cares about, and Skia draws the dashboard from those values without going back through the React render cycle.
+
+The result is a dashboard that reacts instantly to every update, holding a steady 60 FPS on my iPad even when the engine is at full throttle.
+
+## The Result
+
+There is something incredibly satisfying about pressing the throttle and watching something I built respond in real time. The engine revs, the CAN bus lights up, the ESP32 catches it, the iPad reads it, and the gauge moves like it belongs there.
+
+This project taught me that performance is not just about picking fast tools. It is about shaping the whole pipeline so each layer does the job it is best at:
+
+- **Nitro Modules make the data cheap to read.** Instead of asking JavaScript to receive a fresh object for every update, it exposes a stable binary buffer that the app can sample directly.
+- **Skia keeps the UI out of React's way.** The dashboard does not need React to re-render a tachometer sixty times a second. It needs a few values to change and a renderer that can draw them smoothly.
+
+Using an LLM helped in a very specific and useful way for this project. It made the unfamiliar parts less opaque. It was great at scanning logs, spotting candidate bytes, and helping me narrow down where the data lives. It turned hours of staring at hex dumps into a much tighter loop of test, capture, compare, verify.
+
+But it did not replace the engineering. It did not know which signal was safe to trust. It did not validate the data on the machine. It did not decide the threading model, the buffer layout, or the rendering architecture. That part still required judgment.
+
+That was the real lesson for me: AI did not build the dashboard. It helped me cross the gap between disciplines fast enough to keep momentum. The hardware, native code, binary data, animation system, and UI all still had to fit together.
+
+With the combination of AI-assisted exploration and high-performance tools like Nitro Modules, Reanimated, and React Native Skia, React Native starts to feel less like "app development" and more like a way to build interfaces for the physical world.
+
+If you have been looking for a reason to explore what React Native is truly capable of, my advice is simple: look outside the screen. There is probably a data source in your driveway waiting for a better frontend.

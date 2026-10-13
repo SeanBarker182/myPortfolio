@@ -1,12 +1,11 @@
 ---
-/** The Summit Labs mark, from the Summit Labs design system. Outline follows the page ink so it inverts in dark mode. */
+/** The Summit Labs bars, from the Summit Labs design system, without the outer frame. */
 interface Props { class?: string; title?: string }
 const { class: cls = '', title = 'Summit Labs' } = Astro.props;
 ---
 
-<svg class={cls} viewBox="0 0 100 100" role="img" aria-label={title}>
-  <rect x="4" y="4" width="92" height="92" rx="24" fill="none" stroke="currentColor" stroke-width="10"></rect>
-  <rect x="22" y="22" width="24" height="20" rx="6" fill="#E5231C"></rect>
-  <rect x="22" y="46" width="24" height="32" rx="6" fill="#1246E3"></rect>
-  <rect x="54" y="34" width="24" height="44" rx="6" fill="#F6C513"></rect>
+<svg class={cls} viewBox="12 12 76 76" role="img" aria-label={title}>
+  <rect x="14" y="14" width="31" height="26" rx="7" fill="#E5231C"></rect>
+  <rect x="14" y="45" width="31" height="41" rx="7" fill="#1246E3"></rect>
+  <rect x="55" y="29" width="31" height="57" rx="7" fill="#F6C513"></rect>
 </svg>

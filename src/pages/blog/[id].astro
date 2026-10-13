@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 const { post, newer, older } = Astro.props;
 const d = post.data;
 const { Content } = await render(post);
-const date = d.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const date = d.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <Base title={d.title} description={d.description} og={`/og/blog/${post.id}.png`} canonical={d.canonical} type="article">
