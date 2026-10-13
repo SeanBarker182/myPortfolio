@@ -5,28 +5,58 @@ const { class: cls = '' } = Astro.props;
 
 <svg
   class:list={['wob', cls]}
-  viewBox="0 0 340 320"
+  viewBox="0 0 450 320"
   role="img"
-  aria-label="Sketch of a house with a small antenna, two tiny figures beside it, and a hockey stick"
+  aria-label="Sketch of a family of four in front of a house with a radio antenna on the roof, a hockey stick leaning on the wall, and a Polaris Ranger parked beside it"
   fill="none"
   stroke="var(--ink)"
   stroke-width="5"
   stroke-linecap="round"
   stroke-linejoin="round"
 >
-  <path d="M40 160 L170 50 L300 160" fill="var(--paper)"></path>
-  <path d="M70 140 v140 h200 v-140" fill="var(--paper)"></path>
-  <rect x="150" y="210" width="44" height="70" rx="4"></rect>
-  <rect x="90" y="170" width="40" height="36" rx="4"></rect>
-  <rect x="210" y="170" width="40" height="36" rx="4"></rect>
-  <rect x="216" y="176" width="28" height="24" rx="2" fill="var(--accent)" stroke="none"></rect>
-  <path d="M240 90 v-50 M226 54 l14 -14 l14 14" stroke-width="4"></path>
-  <circle cx="240" cy="30" r="6" fill="var(--accent)" stroke="var(--ink)"></circle>
-  <path d="M300 290 l30 -90 M330 200 l-14 -4" stroke-width="5"></path>
-  <circle cx="24" cy="236" r="12"></circle>
-  <path d="M24 248 v30 M24 258 l-10 10 M24 258 l10 10 M24 278 l-8 12 M24 278 l8 12"></path>
-  <circle cx="48" cy="248" r="9"></circle>
-  <path d="M48 257 v22 M48 265 l-7 7 M48 265 l7 7 M48 279 l-6 9 M48 279 l6 9"></path>
-  <path d="M60 110 l12 12 M86 104 v16 M52 136 h16" stroke="var(--accent)" stroke-width="5"></path>
-  <path d="M110 300 q40 12 80 0 q40 -12 80 0" stroke-width="3"></path>
+  <!-- ground -->
+  <path d="M8 302 q110 10 220 0 t214 0" stroke-width="5"></path>
+
+  <!-- house -->
+  <path d="M140 142 v158 h160 v-158" fill="var(--paper)"></path>
+  <path d="M120 160 L220 70 L320 160" fill="var(--paper)"></path>
+  <rect x="205" y="230" width="36" height="70" rx="4"></rect>
+  <rect x="160" y="180" width="36" height="32" rx="4"></rect>
+  <rect x="248" y="180" width="36" height="32" rx="4"></rect>
+  <rect x="254" y="186" width="24" height="20" rx="2" fill="var(--accent)" stroke="none"></rect>
+
+  <!-- antenna on the roof: mast, three elements, signal arcs -->
+  <path d="M265 110 v-62" stroke-width="4"></path>
+  <path d="M250 60 h30 M253 72 h24 M256 84 h18" stroke-width="4"></path>
+  <path d="M277 38 a14 14 0 0 1 0 20 M286 30 a25 25 0 0 1 0 36" stroke="var(--accent)" stroke-width="4"></path>
+
+  <!-- sparkle at the left eave -->
+  <path d="M104 122 l12 12 M130 114 v16 M96 150 h16" stroke="var(--accent)" stroke-width="5"></path>
+
+  <!-- hockey stick leaning on the wall, blade on the ground -->
+  <path d="M312 176 L346 292" stroke-width="5"></path>
+  <path d="M346 292 q6 10 30 4" stroke-width="7"></path>
+  <path d="M318 194 l6 -2 M321 204 l6 -2 M324 214 l6 -2" stroke-width="3"></path>
+
+  <!-- family: dad, wife, two kids -->
+  <circle cx="34" cy="188" r="12"></circle>
+  <path d="M34 200 v50 M34 214 l-12 14 M34 214 l12 14 M34 250 l-9 50 M34 250 l9 50"></path>
+  <circle cx="66" cy="206" r="11"></circle>
+  <path d="M66 217 v38 M66 230 l-10 12 M66 230 l10 12 M66 255 l-8 45 M66 255 l8 45"></path>
+  <circle cx="94" cy="240" r="9"></circle>
+  <path d="M94 249 v24 M94 257 l-8 8 M94 257 l8 8 M94 273 l-6 27 M94 273 l6 27"></path>
+  <circle cx="116" cy="252" r="8"></circle>
+  <path d="M116 260 v18 M116 266 l-7 7 M116 266 l7 7 M116 278 l-5 22 M116 278 l5 22"></path>
+
+  <!-- the Ranger -->
+  <path d="M364 266 h76 q6 0 6 6 v12 q0 6 -6 6 h-76 q-6 0 -6 -6 v-12 q0 -6 6 -6 z" fill="var(--paper)"></path>
+  <path d="M374 266 v-38 q0 -4 4 -4 h44 q4 0 4 4 v38" stroke-width="4"></path>
+  <path d="M370 224 h60" stroke-width="4"></path>
+  <path d="M380 232 l-7 30" stroke-width="3"></path>
+  <path d="M396 258 h20 v8" stroke-width="3"></path>
+  <circle cx="380" cy="290" r="12" fill="var(--paper)"></circle>
+  <circle cx="380" cy="290" r="4"></circle>
+  <circle cx="426" cy="290" r="12" fill="var(--paper)"></circle>
+  <circle cx="426" cy="290" r="4"></circle>
+  <circle cx="443" cy="274" r="4" fill="var(--accent)" stroke="none"></circle>
 </svg>
