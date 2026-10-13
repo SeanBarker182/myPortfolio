@@ -9,13 +9,15 @@ interface Props {
   src?: string;
   alt?: string;
   class?: string;
+  /** cover crops to fill; contain shows the whole image on black. */
+  fit?: 'cover' | 'contain';
 }
-const { color, label, src, alt = '', class: cls = '' } = Astro.props;
+const { color, label, src, alt = '', class: cls = '', fit = 'cover' } = Astro.props;
 ---
 
 {
   src ? (
-    <img src={src} alt={alt} class:list={['h-full w-full object-cover', cls]} loading="lazy" decoding="async" />
+    <img src={src} alt={alt} class:list={['h-full w-full', fit === 'contain' ? 'object-contain bg-black' : 'object-cover', cls]} loading="lazy" decoding="async" />
   ) : (
     <div class:list={['shot h-full w-full', cls]} style={`background:${color}`} role="img" aria-label={`${label} placeholder`}>
       <div class="bar" style="top:14%"></div>

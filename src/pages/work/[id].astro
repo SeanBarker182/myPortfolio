@@ -36,7 +36,7 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone'
       <div class="relative hidden h-[440px] w-[460px] shrink-0 items-end justify-center md:flex">
         <Scene variant={variant} class="absolute inset-0 h-full w-full" />
         {device === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
-        {device === 'tablet' && <div class="tablet relative h-[255px] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
+        {device === 'tablet' && <div class="tablet relative aspect-[1.5] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div></div>}
         {device === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
       </div>
     </section>
@@ -73,7 +73,7 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone'
           device === 'mac' ? (
             <div class="mac h-[240px] w-full"><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div></div>
           ) : device === 'tablet' ? (
-            <div class="tablet h-[300px] w-full" style={`transform: rotate(${i % 2 ? 0.4 : -0.4}deg)`}><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></div></div>
+            <div class="tablet aspect-[1.5] w-full" style={`transform: rotate(${i % 2 ? 0.4 : -0.4}deg)`}><div><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} fit="contain" /></div></div>
           ) : (
             <Phone class="mx-auto h-[380px] w-[190px]" tilt={i % 2 ? 0.5 : -0.5}><Shot color={d.color} label={sc.label} src={sc.src} alt={sc.alt} /></Phone>
           ),
