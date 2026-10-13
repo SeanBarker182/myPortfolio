@@ -8,6 +8,7 @@ export const site = {
   location: 'Fort Wayne, IN',
   role: 'Senior Product Engineer',
   employer: 'Infinite Red',
+  studio: 'Summit Labs',
   social: {
     github: 'https://github.com/seanbarker182',
     linkedin: 'https://www.linkedin.com/in/sean-barker/',

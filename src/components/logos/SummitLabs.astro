@@ -1,0 +1,12 @@
+---
+/** The Summit Labs mark, from the Summit Labs design system. Outline follows the page ink so it inverts in dark mode. */
+interface Props { class?: string; title?: string }
+const { class: cls = '', title = 'Summit Labs' } = Astro.props;
+---
+
+<svg class={cls} viewBox="0 0 100 100" role="img" aria-label={title}>
+  <rect x="4" y="4" width="92" height="92" rx="24" fill="none" stroke="currentColor" stroke-width="10"></rect>
+  <rect x="22" y="22" width="24" height="20" rx="6" fill="#E5231C"></rect>
+  <rect x="22" y="46" width="24" height="32" rx="6" fill="#1246E3"></rect>
+  <rect x="54" y="34" width="24" height="44" rx="6" fill="#F6C513"></rect>
+</svg>

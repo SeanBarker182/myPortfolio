@@ -4,10 +4,12 @@ import Sticker from '@/components/Sticker.astro';
 import House from '@/components/illustrations/House.astro';
 import { site, yearsSince } from '@/data/site';
 import { resume } from '@/data/resume';
+import CompanyLogo from '@/components/logos/CompanyLogo.astro';
 
 const [k1, k2] = site.kids;
 const a1 = yearsSince(k1.born);
 const a2 = yearsSince(k2.born);
+const years = yearsSince(resume.careerStart);
 const facts = [
   { title: 'Electronics', body: 'ESP32 boards, LoRa radios, and a home server rack that has grown past "just one more drive."', border: 'hd2' },
   { title: 'Home Assistant', body: 'The house runs on it. [N] devices, [N] automations, and a doorbell that announces itself.', border: 'hd3' },
@@ -23,7 +25,7 @@ const facts = [
       <div class="flex flex-1 flex-col gap-6 md:basis-[520px]">
         <h1 class="font-hand text-[60px] leading-[0.92] font-bold sm:text-[92px]">Someone said it <span class="hl">couldn't be done.</span></h1>
         <p class="max-w-[560px] text-[21px] leading-normal">
-          That's usually how my projects start. I'm Sean, a {site.role} in the Fort Wayne, Indiana area. I've spent [N] years turning "we need an app for that" into something people actually use, and I still get a kick out of the moment it first runs on a real phone.
+          That's usually how my projects start. I'm Sean, a {site.role} in the Fort Wayne, Indiana area. I've spent {years} years turning "we need an app for that" into something people actually use, and I still get a kick out of the moment it first runs on a real phone.
         </p>
         <div class="flex flex-wrap gap-2.5">
           <Sticker tilt={-2} class="text-xl">staff engineer @ infinite red</Sticker>
@@ -37,10 +39,12 @@ const facts = [
 
     <section class="reveal flex flex-col gap-7">
       <h2 class="font-hand text-[56px] leading-none font-bold">Where I've worked</h2>
-      <ol class="ml-3 flex flex-col border-l-[3px] border-ink pl-8">
-        {resume.experience.map((job, i) => (
+      <ol class="ml-6 flex flex-col border-l-[3px] border-ink pl-10">
+        {resume.experience.map((job) => (
           <li class="relative flex flex-col gap-1.5 pb-9">
-            <span class="absolute top-1 -left-[45px] box-border h-5 w-5 rounded-full border-[3px] border-ink" style={`background:${i === 0 ? 'var(--accent)' : 'var(--paper)'}`} aria-hidden="true"></span>
+            <span class="absolute top-0 -left-[66px]" style={job.end === 'Present' ? 'filter: drop-shadow(3px 3px 0 var(--accent))' : undefined}>
+              <CompanyLogo logo={job.logo} company={job.company} size={48} />
+            </span>
             <div class="font-mono text-[13px] opacity-65">{job.start} to {job.end}</div>
             <div class="text-2xl font-extrabold">{job.title} <span class="font-semibold opacity-70">· {job.company}</span></div>
             <div class="max-w-[720px] text-[17px] leading-normal">{job.bullets[0]}</div>

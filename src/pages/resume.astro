@@ -2,6 +2,7 @@
 import Base from '@/layouts/Base.astro';
 import { site } from '@/data/site';
 import { resume } from '@/data/resume';
+import CompanyLogo from '@/components/logos/CompanyLogo.astro';
 ---
 
 <Base title="Resume" description={`Resume for ${site.name}, ${site.role}.`} og="/og/resume.png">
@@ -23,8 +24,11 @@ import { resume } from '@/data/resume';
       <h2 class="font-hand text-5xl leading-none font-bold print:text-3xl">Experience</h2>
       {resume.experience.map((job) => (
         <div class="hd flex flex-col gap-2 px-7 py-6 print:border-0 print:px-0 print:py-2">
-          <div class="flex flex-wrap items-baseline justify-between gap-2">
-            <div class="text-xl font-extrabold">{job.title} <span class="font-semibold opacity-70">· {job.company}</span></div>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <CompanyLogo logo={job.logo} company={job.company} size={44} />
+              <div class="text-xl font-extrabold">{job.title} <span class="font-semibold opacity-70">· {job.company}</span></div>
+            </div>
             <div class="font-mono text-[13px] opacity-65">{job.start} to {job.end} · {job.location}</div>
           </div>
           <ul class="list-disc pl-6 text-[17px] leading-relaxed">
@@ -46,11 +50,34 @@ import { resume } from '@/data/resume';
       </div>
     </section>
 
+    {resume.education.length > 0 && (
+      <section class="flex flex-col gap-4">
+        <h2 class="font-hand text-5xl leading-none font-bold print:text-3xl">Education</h2>
+        {resume.education.map((e) => (
+          <div class="text-[17px]"><strong>{e.degree}</strong>, {e.school} · {e.year}</div>
+        ))}
+      </section>
+    )}
+
+    <section class="flex flex-col gap-5 print:hidden">
+      <h2 class="font-hand text-5xl leading-none font-bold">Kind words</h2>
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {resume.recommendations.map((r, i) => (
+          <blockquote class:list={['m-0 flex flex-col gap-3 px-7 py-6', i % 2 ? 'hd3' : 'hd2']}>
+            <p class="m-0 text-[17px] leading-relaxed">“{r.quote}”</p>
+            <footer class="text-sm opacity-70"><strong>{r.from}</strong> · {r.role}</footer>
+          </blockquote>
+        ))}
+      </div>
+    </section>
+
     <section class="flex flex-col gap-4">
-      <h2 class="font-hand text-5xl leading-none font-bold print:text-3xl">Education</h2>
-      {resume.education.map((e) => (
-        <div class="text-[17px]"><strong>{e.degree}</strong>, {e.school} · {e.year}</div>
-      ))}
+      <h2 class="font-hand text-5xl leading-none font-bold print:text-3xl">Certifications</h2>
+      <ul class="flex flex-col gap-1.5 text-[17px]">
+        {resume.certifications.map((c) => (
+          <li><strong>{c.name}</strong> · {c.issuer}, {c.year}</li>
+        ))}
+      </ul>
     </section>
   </div>
 </Base>
