@@ -3,14 +3,16 @@ title: Abrupt
 tagline: "A tracker for quitting nicotine pouches. It will not quit for you."
 description: "Abrupt is a native iOS and watchOS tracker for adults quitting nicotine pouches, built for people who respond to data rather than encouragement. Every claim in the app links to a study."
 color: "#b35c00"
-status: soon
+status: live
 platform: iOS · watchOS
 device: phone
 order: 2
 year: 2026
 stack: [Swift 6, SwiftUI, SwiftData, HealthKit, Swift Charts, StoreKit 2, WidgetKit, watchOS]
 role: "Everything: research, product, design system, iOS and watch builds. Built on my own, with a lot of help from Claude Code."
-timeline: "Planning Oct 7 to 13, 2026. Build underway. TestFlight next."
+timeline: "Planning Oct 7 to 13, 2026. Version 1.0 on the App Store the same month."
+links:
+  appStore: "#"
 screens: [Today, Vitals, Library]
 next: polaris
 ---
@@ -49,13 +51,16 @@ Most of the Swift lives in nine local packages that compile on Linux, with Swift
 
 A lapse is one pouch. It resets the day count but doesn't end the attempt. A relapse is seven consecutive days with a pouch. The vocabulary is fixed in a glossary and the rules live in the core package with tests, because an app about quitting that gets "did I fail" wrong is worse than no app.
 
-## Where it stands
+## How it went
 
-- Planning finished Oct 7, 2026, with thirteen accepted architecture decisions by Oct 13.
-- Built so far: the evidence library, the domain rules, HealthKit rollups, the SwiftData store, export, the design tokens and components, haptics, notifications, and the app shell.
-- Being built: the Today, Vitals, Library, and Settings screens, onboarding, the craving timer, the purchase flow, the watch app, widgets, and a Live Activity.
-- Next: user interviews with pouch quitters, an n-of-1 HRV pilot on my own quit with an Apple Watch and a ring, then TestFlight.
-- Later: an optional taper in 1.1, a cotinine-verified deposit contract in 2.0, and vapes as the second product. Android only if the iOS product proves the model.
+Planning finished on Oct 7, 2026, with thirteen accepted architecture decisions by Oct 13, and version 1.0 shipped to the App Store the same month: iPhone and Apple Watch, with widgets, a craving Live Activity, and the full evidence library on board. Fifteen dollars, once.
+
+What's next:
+
+- User interviews with pouch quitters, and an n-of-1 HRV pilot on my own quit with an Apple Watch and a ring, to start filling the research gap.
+- An optional taper in 1.1.
+- A cotinine-verified deposit contract in 2.0.
+- Vapes as the second product. Android only if the iOS product proves the model.
 
 ## What it demonstrates
 
