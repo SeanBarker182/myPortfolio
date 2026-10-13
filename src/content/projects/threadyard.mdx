@@ -1,26 +1,67 @@
 ---
 title: Threadyard
-tagline: A macOS app for keeping an eye on every agent you have running, in one window.
-description: Threadyard is a macOS app for monitoring your AI coding agents, coming soon as a direct download.
-color: "#16a34a"
+tagline: "Run every coding agent from one place. See what needs you, resume past work, and move between agents without losing the thread."
+description: "Threadyard is a native macOS menu bar app for developers running several AI coding agents at once. It watches Claude Code, Codex and Cursor through their hooks, shows what needs a decision, and lets you proceed, stop, focus the exact tab, or hand work to another agent."
+color: "#0058c7"
 status: soon
 platform: macOS
 device: mac
 order: 5
-stack: [macOS, Swift, TypeScript]
-role: Everything. Built on my own.
-screens: [Overview, Agent detail]
+year: 2026
+stack: [Swift 6, SwiftUI, AppKit, Hooks, Accessibility, UserNotifications, XcodeGen]
+role: "Everything. Product, architecture, the adapters for each agent, the design passes, and the name. Built on my own."
+timeline: "Started Sep 21, 2026. Three passes in three days. Bug squashing now, first release next."
+screens: [Rail, Session card, Doctor]
 next: jam-center
 ---
 
 ## The problem
 
-Once you run more than two agents at a time, you lose track of which one is waiting on you. Terminal tabs don't scale.
+One developer running three to six coding agent sessions at once, across terminals and IDEs, finds out which one is waiting on them by cycling tabs. An agent stops at a permission prompt and sits there for twenty minutes because its tab was behind another tab. Another finishes and nobody notices. The tools that exist each watch one agent, and none of them has a spatial client you can park at the edge of a screen.
+
+Threadyard is that client. A narrow rail on the edge of the display, one card per live session, and peripheral vision does the work: a color change means look over, an expanded card means decide.
 
 ## The build
 
-[How Threadyard discovers running agents, what it watches, and how it surfaces "needs you" without being a notification firehose.]
+### Native, single process, no Node
 
-## How it went
+It's Swift 6 with strict concurrency, SwiftUI for the views and a little AppKit where macOS needs it. A menu bar extra with a popover, a floating rail window, and a main window for projects and history. No Dock icon. No Electron. The core, the model, the reducer and every agent adapter, is a pure Swift package with no UI, so it tests on its own.
 
-[Still squashing bugs. The download link lands here once the first release is cut.]
+### Seeing agents through their hooks
+
+Each agent gets an adapter. Claude Code talks to a loopback HTTP server through its native hooks. Codex CLI and Cursor go through a small shell shim that posts the same events. Codex running inside the ChatGPT desktop app has no hooks, so Threadyard tails its rollout logs and reads its state database instead. Cursor windows are found through the Accessibility API. Every event lands in an NDJSON log, and a pure reducer folds the log into session state.
+
+That last part is deliberate. Because the reducer is pure and every event is logged, a slice of the log is the bug report. Real diagnostics bundles from my own machine become fixture tests.
+
+### Fail open, always
+
+A hook that blocks an agent is a hook that can break an agent. Threadyard's rule is that a timeout inside the app resolves to passthrough, never deny. Some Claude Code versions deny when an HTTP hook is unreachable, so blocking hooks go through the shim, which prints an empty response if the app isn't there. If Threadyard crashes, your agents keep working as if it never existed.
+
+### Knowing what's actually alive
+
+Session state built only from pushed events drifts: a terminal closed, a process died, a Cursor tab went away, and nothing ever sent an event. So a reconciler checks process ids, transcript modification times, and the host app, and attaches evidence to every verdict. A card can say "inferred from Cursor" rather than pretending to know. It reconciles a fifth of the live cards per tick so a tick never does more than a few cheap system calls, and the Accessibility check is capped at a quarter second.
+
+Identity rules keep the rail honest. Headless runs are hidden. Subagents fold into their parent's card. A new session on a process that's already busy replaces the old one.
+
+### Act from where you are
+
+Proceed, always proceed, or stop, from the rail, the popover, or the notification itself. Focus walks the process chain and jumps to the exact tab in Terminal, iTerm, Warp or Ghostty. Launch or resume a past session in the terminal of your choice. Hand a task to a different agent, with a summary the source agent writes headlessly first. About 190 past sessions imported from transcripts into searchable history on day three.
+
+### Local by construction
+
+The server listens on loopback only with a per-install token. Hooks are installed at the user level. Usage limits for Claude come from your own Keychain credential and are opt-in. Diagnostics bundles never include transcripts.
+
+## The name
+
+It launched as Semaphore, after the railway arm. The name was taken, and by the third pass the app had become a workspace rather than a monitor, which the arm no longer described. A collision screen on day one ranked the candidates. Threadyard won because the headline features were becoming persistent history and continuity across agents: a yard where threads are gathered. The vocabulary stayed on the rails. Sessions are "at signal," and the buttons are Proceed, Stop, and All clear.
+
+## Where it stands
+
+- Version 0.1.0, running daily on my own machine with Claude Code, Codex CLI, Codex desktop, and Cursor.
+- Bug squashing before the first release: a hand-off to Codex that stalls at its directory trust prompt, a closed Cursor tab that still reads as idle, and Ghostty untested.
+- Next: per-agent stale thresholds, then a visionOS client for the rail, a Stream Deck client, and a switcher panel.
+- The download lands here when the first build is cut.
+
+## What it demonstrates
+
+A native Mac app with real system integration: hooks, Accessibility, process inspection, notifications with actions, AppleScript into four terminals. An architecture chosen for debuggability, where logs are the test fixtures. And a product that earns its place by failing safely: it can observe and help without ever being able to break the thing it watches.
