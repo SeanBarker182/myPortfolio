@@ -31,9 +31,9 @@ const projects = defineCollection({
       .default({}),
     /** Screens: a label alone renders a colored placeholder; add src (and alt) once a real image exists. */
     screens: z
-      .array(z.union([z.string(), z.object({ label: z.string(), src: z.string(), alt: z.string().optional() })]))
+      .array(z.union([z.string(), z.object({ label: z.string(), src: z.string(), alt: z.string().optional(), frame: z.enum(['phone', 'tablet', 'mac', 'watch', 'none']).optional() })]))
       .default([])
-      .transform((arr) => arr.map((s) => (typeof s === 'string' ? { label: s, src: undefined, alt: undefined } : s))),
+      .transform((arr) => arr.map((s) => (typeof s === 'string' ? { label: s, src: undefined, alt: undefined, frame: undefined } : s))),
     video: z.string().optional(),
     next: z.string().optional(),
   }),
