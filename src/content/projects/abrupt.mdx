@@ -1,25 +1,62 @@
 ---
 title: Abrupt
-tagline: A health-focused quit-nicotine tracker that treats quitting like recovery, not a countdown.
-description: Abrupt is a health-focused app for quitting nicotine, coming soon to the App Store and Play Store.
-color: "#0d9488"
+tagline: "A tracker for quitting nicotine pouches. It will not quit for you."
+description: "Abrupt is a native iOS and watchOS tracker for adults quitting nicotine pouches, built for people who respond to data rather than encouragement. Every claim in the app links to a study."
+color: "#b35c00"
 status: soon
 platform: iOS · watchOS
+device: phone
 order: 2
-stack: [Swift, HealthKit, TypeScript]
-role: Product, design, iOS and Android build, backend, store submission. Built on my own.
-screens: [Today, Milestones, Cravings]
+year: 2026
+stack: [Swift 6, SwiftUI, SwiftData, HealthKit, Swift Charts, StoreKit 2, WidgetKit, watchOS]
+role: "Everything: research, product, design system, iOS and watch builds. Built on my own, with a lot of help from Claude Code."
+timeline: "Planning Oct 7 to 13, 2026. Build underway. TestFlight next."
+screens: [Today, Vitals, Library]
 next: polaris
 ---
 
 ## The problem
 
-[Why most quit apps are a timer with a paywall, and what a health-first version does differently.]
+There are at least sixteen apps for quitting nicotine pouches, and they all do the same thing: a countdown, a streak, a cheerful push notification, and a paywall. They treat quitting like a motivational problem.
+
+The evidence says something less flattering. A Cochrane review found no effect of smartphone apps on quitting. What does move the number is commitment: money put down at the moment you commit roughly doubles abstinence. And for pouches specifically, nobody has prospective data on what withdrawal actually does to your sleep, heart rate, or HRV, because the category is too new.
+
+Abrupt is built on both of those facts. It's positioned as MacroFactor for quitting nicotine: a tracker and a commitment device for people who respond to data, not encouragement. It never claims to be a treatment. Every number it shows links to the study it came from.
 
 ## The build
 
-[The health data integration, the craving log, and how the milestone system avoids guilt-tripping people who slip.]
+### Start with the evidence
 
-## How it went
+Before writing code I reviewed about 130 sources on quitting pouches and turned the useful ones into a typed evidence library: 70 sources, 106 claims, and 16 predictions, all in JSON with a linter and a build plugin that turns every claim into a typed identifier. If a screen cites a claim that doesn't exist, the build fails.
 
-[Launch is coming. Replace this with the outcome once it ships.]
+The predictions drive the charts. A published prediction renders as a shaded band, never a line, because a line would claim a precision no source gives. There are no outcome colors either: no green for good, no red for bad. Amber means "your data." Teal means "go somewhere." That's the whole palette.
+
+### Charge at the commitment moment
+
+Setting a quit date is the commitment. So that's where the paywall is: fifteen dollars, once, no subscription, no refunds, and the app tells you not to buy it until you've picked a date. The copy is tested in CI. A script fails the build if anyone writes "easy," "journey," or "you've got this."
+
+### Health data without becoming a health-data company
+
+HealthKit is read-only. Abrupt reads daily rollups with background delivery and never copies raw samples into its own store. SwiftData is local only, in an App Group container, with no iCloud sync. The watch app and widgets never write to the store; they send events and read snapshots, because two processes writing one SwiftData store is where lost writes live.
+
+Research mode, for the gap in the literature, works without a server. There's a published upload format and an open-source receiver that a research partner runs themselves. Payloads are encrypted to the study's key with HPKE and reuse the export serializer, so research mode can never send something the user couldn't export for free. The whole mode is behind a build-time flag: on in TestFlight, off in the App Store build. Feature flags are compiled in rather than fetched, so the shipped app never phones a third party on launch.
+
+### Built to be built by agents
+
+Most of the Swift lives in nine local packages that compile on Linux, with Swift Testing and a GitHub Actions gate. That's deliberate: a lot of the code is written by Claude Code sessions, some in cloud containers with no Xcode. The git history is honest about it. Of 126 commits in the first week, 86 are authored by Claude and 40 by me. My job was the research, the decisions, the design system, and the review.
+
+### The relapse model
+
+A lapse is one pouch. It resets the day count but doesn't end the attempt. A relapse is seven consecutive days with a pouch. The vocabulary is fixed in a glossary and the rules live in the core package with tests, because an app about quitting that gets "did I fail" wrong is worse than no app.
+
+## Where it stands
+
+- Planning finished Oct 7, 2026, with thirteen accepted architecture decisions by Oct 13.
+- Built so far: the evidence library, the domain rules, HealthKit rollups, the SwiftData store, export, the design tokens and components, haptics, notifications, and the app shell.
+- Being built: the Today, Vitals, Library, and Settings screens, onboarding, the craving timer, the purchase flow, the watch app, widgets, and a Live Activity.
+- Next: user interviews with pouch quitters, an n-of-1 HRV pilot on my own quit with an Apple Watch and a ring, then TestFlight.
+- Later: an optional taper in 1.1, a cotinine-verified deposit contract in 2.0, and vapes as the second product. Android only if the iOS product proves the model.
+
+## What it demonstrates
+
+Starting a product from an evidence review instead of a feature list. Designing privacy as architecture rather than a policy page. Making the money model match the behavioral science. And running an agent-written codebase with enough structure, typed evidence, Linux-buildable packages, and a tone check in CI, that the output stays trustworthy.
