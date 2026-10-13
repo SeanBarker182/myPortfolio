@@ -27,18 +27,18 @@ export const nav = [
   { href: '/resume', label: 'Resume' },
 ];
 
-/** Whole years since an ISO date, computed at render time. */
+/** Whole years since an ISO date, computed at render time. Used for ages: never rounds up. */
 export function yearsSince(iso: string, now = new Date()): number {
   const b = new Date(iso);
-  const years = now.getFullYear() - b.getFullYear();
-  if (now.getMonth() === b.getMonth() && now.getDate() === b.getDate()) return years;
-  if (
-    now.getMonth() > b.getMonth() ||
-    (now.getMonth() === b.getMonth() && now.getDate() > b.getDate())
-  ) {
-    return years + 1;
-  }
-  return years;
+  let a = now.getFullYear() - b.getFullYear();
+  if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) a--;
+  return a;
+}
+
+/** Years since an ISO date, rounded to the nearest whole year. Used for the career figure. */
+export function yearsSinceRounded(iso: string, now = new Date()): number {
+  const ms = now.getTime() - new Date(iso).getTime();
+  return Math.round(ms / (365.25 * 24 * 60 * 60 * 1000));
 }
 
 export function readingTime(body: string | undefined): number {

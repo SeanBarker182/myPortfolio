@@ -2,14 +2,14 @@
 import Base from '@/layouts/Base.astro';
 import Sticker from '@/components/Sticker.astro';
 import House from '@/components/illustrations/House.astro';
-import { site, yearsSince } from '@/data/site';
+import { site, yearsSince, yearsSinceRounded } from '@/data/site';
 import { resume } from '@/data/resume';
 import CompanyLogo from '@/components/logos/CompanyLogo.astro';
 
 const [k1, k2] = site.kids;
 const a1 = yearsSince(k1.born);
 const a2 = yearsSince(k2.born);
-const years = yearsSince(resume.careerStart);
+const years = yearsSinceRounded(resume.careerStart);
 const facts = [
   { title: 'Electronics', body: 'ESP32 boards, LoRa radios, and a home server rack that has grown past "just one more drive."', border: 'hd2' },
   { title: 'Home Assistant', body: 'The house runs on it. [N] devices, [N] automations, and a doorbell that announces itself.', border: 'hd3' },
