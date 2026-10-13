@@ -19,7 +19,7 @@ const next = d.next ? await getEntry('projects', d.next) : undefined;
 const statusLabel = d.status === 'live' ? `live on ${d.platform.toLowerCase()}` : d.status === 'soon' ? 'coming soon' : 'writeup';
 const device = d.device;
 const screens = d.screens.length ? d.screens : [{ label: 'Screen', src: undefined, alt: undefined }];
-const variant = project.id === 'big-fort-fest' ? 'festival' : 'bench';
+const variant = project.id === 'big-fort-fest' ? 'festival' : device === 'phone' ? 'bench' : 'sides';
 ---
 
 <Base title={d.title} description={d.description} og={`/og/work/${project.id}.png`} type="article">
@@ -35,8 +35,8 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : 'bench';
       </div>
       <div class="relative hidden h-[440px] w-[460px] shrink-0 items-end justify-center md:flex">
         <Scene variant={variant} class="absolute inset-0 h-full w-full" />
-        {device === 'mac' && <div class="mac relative h-[260px] w-[400px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
-        {device === 'tablet' && <div class="tablet relative h-[300px] w-[400px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
+        {device === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
+        {device === 'tablet' && <div class="tablet relative h-[255px] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
         {device === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
       </div>
     </section>

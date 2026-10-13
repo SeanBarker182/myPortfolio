@@ -3,7 +3,7 @@
  * The backdrop sketch behind a case-study hero. Tents and bunting for now;
  * each project can get its own scene later by adding a variant here.
  */
-interface Props { class?: string; variant?: 'festival' | 'bench' }
+interface Props { class?: string; variant?: 'festival' | 'bench' | 'sides' }
 const { class: cls = '', variant = 'festival' } = Astro.props;
 ---
 
@@ -27,6 +27,11 @@ const { class: cls = '', variant = 'festival' } = Astro.props;
       <path d="M100 60 q40 20 80 0 q40 -20 80 0 q40 20 80 0" stroke-width="4"></path>
       <circle cx="400" cy="210" r="22" fill="var(--paper)"></circle>
       <path d="M400 232 v30 M385 250 h30 M400 188 v-12 M416 194 l8 -8 M384 194 l-8 -8"></path>
+    </>
+  ) : variant === 'sides' ? (
+    <>
+      <path d="M18 280 l16 16 M52 270 v22 M8 318 h22" stroke="var(--accent)" stroke-width="5"></path>
+      <path d="M442 280 l-16 16 M408 270 v22 M452 318 h-22" stroke="var(--accent)" stroke-width="5"></path>
     </>
   ) : (
     <>
