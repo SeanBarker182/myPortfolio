@@ -1,10 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import Sticker from './Sticker.astro';
 
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
-const { links, status } = project.data;
+const { links } = project.data;
 ---
 
 <div class="flex flex-wrap gap-3.5">
@@ -28,5 +27,4 @@ const { links, status } = project.data;
   )}
   {links.writeup && <a href={links.writeup} class="btn btn-primary hd">Read the writeup</a>}
   {links.site && <a href={links.site} class="btn hd2" rel="noopener">Project site</a>}
-  {status === 'soon' && !links.appStore && !links.download && <Sticker accent tilt={-2}>coming soon</Sticker>}
 </div>
