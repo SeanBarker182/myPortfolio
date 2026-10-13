@@ -12,6 +12,8 @@ const projects = defineCollection({
     color: z.string(),
     status: z.enum(['live', 'soon', 'writeup']),
     platform: z.string(),
+    /** Which frame the screenshots sit in. */
+    device: z.enum(['phone', 'tablet', 'mac']).default('phone'),
     order: z.number(),
     year: z.number().optional(),
     stack: z.array(z.string()),
