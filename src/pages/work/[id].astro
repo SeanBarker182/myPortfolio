@@ -27,20 +27,22 @@ const variant = project.id === 'big-fort-fest' ? 'festival' : heroFrame === 'pho
   <article class="mt-12 flex flex-col gap-18">
     <!-- Hero -->
     <section class="flex flex-col items-center gap-12 md:flex-row">
-      <div class="flex flex-1 flex-col gap-5 md:basis-[520px]">
+      <div class="flex min-w-0 flex-1 flex-col gap-5 md:basis-[420px]">
         <a href="/work" class="text-base font-bold text-link no-underline">← All work</a>
         <Sticker tilt={-2} class="self-start text-xl" accent={d.status === 'soon'}>{statusLabel}</Sticker>
         <h1 class="font-hand text-[64px] leading-[0.92] font-bold sm:text-[96px]">{d.title}</h1>
         <p class="max-w-[540px] text-[21px] leading-normal">{d.tagline}</p>
         <StoreLinks project={project} />
       </div>
-      <div class="relative hidden h-[440px] w-[460px] shrink-0 items-end justify-center md:flex">
+      <div class="relative hidden shrink-0 md:block md:h-[308px] md:w-[322px] lg:h-[440px] lg:w-[460px]">
+       <div class="absolute right-0 bottom-0 flex h-[440px] w-[460px] origin-bottom-right items-end justify-center md:scale-[0.7] lg:scale-100">
         <Scene variant={variant} class="absolute inset-0 h-full w-full" />
         {heroFrame === 'mac' && <div class="mac relative h-[230px] w-[350px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
         {heroFrame === 'tablet' && <div class="tablet relative aspect-[1.5] w-[340px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} fit="contain" /></div></div>}
         {heroFrame === 'watch' && <div class="watch relative h-[260px] w-[220px]"><div><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div></div>}
         {heroFrame === 'none' && <div class="relative w-[196px] overflow-hidden rounded-2xl lift"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></div>}
         {heroFrame === 'phone' && <Phone class="relative h-[400px] w-[200px]"><Shot color={d.color} label={screens[0].label} src={screens[0].src} alt={screens[0].alt} /></Phone>}
+       </div>
       </div>
     </section>
 
