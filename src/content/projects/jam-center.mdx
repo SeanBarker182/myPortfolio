@@ -1,25 +1,77 @@
 ---
 title: JAM Center
-tagline: "[One line on what JAM Center does and who it is for]"
-description: "[A sentence for search engines and link previews about JAM Center.]"
-color: "#6d28d9"
+tagline: "One app for a community rec center: what's happening at JAM, when, and a place to track your own training. No sign-in, works without signal."
+description: "JAM Center is the member app for the Judy A. Morrill Recreation Center in Garrett, Indiana. It merges the pool and gym schedules, Daxko programs, and Handbid events into one offline-first timeline, adds a barcode check-in pass and an on-device wellness tracker, and gives staff a CMS they can run."
+color: "#00a8a5"
 status: soon
 platform: iOS · Android
+device: phone
 order: 1
-stack: [React Native, TypeScript]
-role: Product, design, iOS and Android build, backend, store submission. Built on my own.
-screens: [Home, Detail, Profile]
+year: 2026
+stack: [React Native, Expo, expo-router, TanStack Query, SQLite, Drizzle, Payload CMS, Cloudflare Workers, D1, R2, zod, Maestro]
+role: "Product, app, CMS, imports, the embeddable web widget, and the design system. Built on my own."
+timeline: "Sep 9 to Oct 1, 2026, with the client's staff editing content from week one. Store launch next."
+screens:
+  - label: Home
+    src: /work/jam-center/home.jpg
+    alt: JAM Center home screen with Scan Pass, Hours and Schedules tiles, a programs carousel and upcoming events
+  - label: Schedule
+    src: /work/jam-center/schedule.jpg
+    alt: The Schedule tab with a week date strip, category chips and a list of pool, fitness and gym events
+  - label: Check in
+    src: /work/jam-center/checkin.jpg
+    alt: The Check In screen showing a membership pass card with a barcode
+  - label: Info
+    src: /work/jam-center/info.jpg
+    alt: The Info tab with hours of operation, settings and contact cards
 next: abrupt
 ---
 
 ## The problem
 
-[Who needed this, what they were doing before, and why an app.]
+The Judy A. Morrill Recreation Center is the rec center for Garrett, Indiana: one building with a pool, a gym, fitness classes, and a calendar of community events. The information members need is spread across three places that don't talk to each other. Program registration lives in Daxko. Fundraisers and ticketed events live in Handbid. The daily pool and gym schedule lives with the staff, who are not technical and were maintaining it by hand.
+
+So "what's happening at JAM right now" had no single answer, and the people who could fix that didn't own a developer.
 
 ## The build
 
-[The two or three decisions that mattered most. Keep it to what you would tell another engineer over coffee.]
+### One timeline, three sources
 
-## How it went
+The Schedule tab shows one day at a time and merges everything: pool and gym slots, Daxko programs, Handbid events. A date strip, a calendar picker, a source filter, and a "now" line. Daxko has no public API, so a nightly scraper pulls programs and registration links. Handbid's organization endpoints aren't in its published reference, so a daily import reads what its anonymous endpoints actually return. Neither system is replaced: registration, membership, and payment stay in Daxko, and the app links out.
 
-[Launch is coming. Replace this with the outcome once it ships.]
+Synced data and staff-edited data are kept in separate records, so a re-import never overwrites a correction a staff member made.
+
+### A CMS the staff can run
+
+The backend is Payload CMS running on Cloudflare Workers, with D1 for the database and R2 for uploads. Fourteen collections and two globals. Staff edit the home screen as blocks: hero, announcements, coming up, quick links, mission, and a "Home Of" carousel for the programs the building hosts. The admin has custom views for the schedule editor, overrides, and a live preview of Home Of. Shared zod contracts validate every API response on the server, and the app and the embeddable web widget parse responses with the same schemas, so the three can't drift.
+
+### Offline first, and no accounts
+
+Members never sign in. A cold launch without a network renders from the persisted cache and does not fail. Content is snapshotted on mount and on foreground so a background refetch never swaps a screen mid-scroll. The API holds no user data and will never hold user data.
+
+### Check in
+
+A membership pass on the phone: scan the barcode on your physical card with the camera, or type the number, and the app renders a Code 39 barcode the front desk can scan. The encoder is a few hundred lines in the app rather than a dependency.
+
+### Wellness, kept on the device
+
+An activity library with filters, plans, JAM-built sessions and sessions members build themselves, a full-screen session logger, progress with a weekly goal and a streak calendar, and history. All of it lives in SQLite on the phone through Drizzle. Finishing a log runs in a single transaction so a crash between steps can't record a session twice, and rest clocks are computed from timestamps so time in the background still counts. A plan is optional; nobody is blocked from training by not having one.
+
+### Built with the compiler on
+
+Expo SDK 57, React Native 0.86, React 19 with the React Compiler enforced: manual memoization is banned by lint, and a script fails the build on any component the compiler skips. Native tabs give Liquid Glass on iOS 26 and Material on Android. Thirteen Maestro flows exercise the app on a simulator and an emulator.
+
+### Design
+
+A single teal accent on a slate neutral ramp, Inter, Tabler icons, and copy rules the whole product follows: no emoji, no exclamation marks. The design system was built in Claude Design and handed off as tokens and components, with a written gap analysis between the designed admin and the live Payload admin.
+
+## Where it stands
+
+- Built in three weeks, with the client's staff editing content in the CMS from the first week.
+- App at 1.0.0, submitted to the App Store and Play Store next.
+- The Cloudflare cutover is the last step: edge caching and a preview deploy, then the nightly imports go live.
+- A short list to confirm with JAM: building hours, member number length, and the barcode check digit.
+
+## What it demonstrates
+
+Integration work where the data sources are hostile: one with no API, one with undocumented endpoints, one that lives in a staff member's head. A content model that lets a non-technical team own their app. Offline-first and privacy-first as defaults, not features. And a modern React Native setup, compiler enforced and tested end to end, delivered on a client timeline.
